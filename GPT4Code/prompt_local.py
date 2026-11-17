@@ -53,8 +53,10 @@ def main():
 
     system, pairs = load_prompt_parts()
     test = pd.read_csv(os.path.join(HERE, "..", "Dataset", "test_annotated.csv")).dropna()
-    if a.limit:
-        test = test.head(a.limit)
+    if a.limit:  # prueba rapida: muestra con positivos (los primeros del test no tienen ninguno)
+        pos = test[test["has_data_leakage"] == 1].head(max(1, a.limit // 3))
+        neg = test[test["has_data_leakage"] == 0].head(a.limit - len(pos))
+        test = pd.concat([pos, neg])
     tok = AutoTokenizer.from_pretrained(a.model)
     model = AutoModelForCausalLM.from_pretrained(a.model, torch_dtype=torch.float16, device_map="auto")
     model.eval()
