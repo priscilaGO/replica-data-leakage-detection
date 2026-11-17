@@ -1,0 +1,5 @@
+shots,model,precision,recall,f1,f2
+0,Qwen/Qwen2.5-Coder-3B-Instruct,0.0889,0.16,0.1143,0.1379
+1,Qwen/Qwen2.5-Coder-3B-Instruct,0.1184,0.36,0.1782,0.2557
+3,Qwen/Qwen2.5-Coder-3B-Instruct,0.1667,0.60,0.2609,0.3947
+5,Qwen/Qwen2.5-Coder-3B-Instruct,0.1429,0.72,0.2384,0.3982
