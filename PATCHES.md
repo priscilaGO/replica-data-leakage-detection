@@ -35,3 +35,14 @@ Todas las modificaciones están marcadas con `# PATCH` en el código.
 3. **No hay código para BERT.** El código solo carga CodeBERT; la fila BERT de la Tabla 2 requeriría cambiar el modelo y el tokenizador.
 4. **El prompting con pocos ejemplos está comentado.** `gpt.py` ejecuta solo zero-shot; los ejemplos de 1, 3 y 5 están comentados.
 5. **Dataset:** train tiene 91 positivos y test 25 (total 116; el artículo indica 115).
+
+## Desviación declarada: LLM local en lugar de GPT-3.5
+
+No hay API key de OpenAI, así que el aumento de datos y el prompting usan **Qwen2.5-Coder-3B-Instruct** (modelo abierto, corre en Colab).
+
+| Archivo | Cambio |
+| --- | --- |
+| `AL4Code/query_strategies/strategy.py` | Con `AUG_BACKEND=local` el aumento usa el LLM local (muestreo con temperatura 0.7; código de entrada cortado a 1,500 tokens). El LLM se mueve a la GPU solo mientras aumenta |
+| `GPT4Code/prompt_local.py` | Mismo prompt de sistema, mismos 5 pares de ejemplos y mismo test que `gpt.py`; con k ejemplos se usan los primeros k pares (k por clase). Código del test cortado a 2,048 tokens. Decodificación determinista |
+
+Consecuencia: los resultados de prompting y de active learning con aumento no tienen por qué coincidir con el artículo; se comparan y se reportan tal cual.
