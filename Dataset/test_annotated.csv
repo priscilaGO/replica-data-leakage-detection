@@ -1,0 +1,2636 @@
+code_block,has_data_leakage
+"#cv = model_selection.StratifiedShuffleSplit(n_splits = 10, random_state = 42)  
+
+param_dist = dict(learning_rate= learning_rate_dist, n_estimators= n_estimators_dist) 
+
+# run randomized search
+n_iter_search = 20
+random_search = model_selection.RandomizedSearchCV(model, param_distributions=param_dist,
+                                   n_iter=n_iter_search, scoring= 'roc_auc')
+
+start = time()
+random_search.fit(X_train, y_train)
+print(""RandomizedSearchCV took %.2f seconds for %d candidates""
+      "" parameter settings."" % ((time() - start), n_iter_search))
+report(random_search.cv_results_)'",0
+"df = df_train[df_train.Open != 0].merge(df_store, on='Store').fillna(1)
+df.drop(['Store', 'Date', 'Customers'], axis=1, inplace=True)",0
+"stores_avg_cust = data.groupby(['Store'])[['Customers']].mean().reset_index().astype(int)
+test_1 = test.merge(stores_avg_cust,on='Store',how='left')
+test.shape,test_1.shape
+test_merged = test_1.merge(store,on='Store',how='inner')
+test_merged['Open']=test_merged['Open'].fillna(1)
+test_merged['Date']=pd.to_datetime(test_merged[""Date""],format='%Y-%m-%d')
+test_merged['day']=test_merged['Date'].dt.day
+test_merged['month']=test_merged['Date'].dt.month
+test_merged['year']=test_merged['Date'].dt.year
+test_merged['StateHoliday']=test_merged['StateHoliday'].map({'0':0,'a':1})
+test_merged['StateHoliday']=test_merged['StateHoliday'].astype(int)
+test_merged['Assortment']=test_merged['Assortment'].map({'a':1,'b':2,'c':3})
+test_merged['Assortment']=test_merged['Assortment'].astype(int)
+test_merged['StoreType']=test_merged['StoreType'].map({'a':1,'b':2,'c':3,'d':4})
+test_merged['StoreType']=test_merged['StoreType'].astype(int)
+map_promo = {'Jan,Apr,Jul,Oct':1,'Feb,May,Aug,Nov':2,'Mar,Jun,Sept,Dec':3}
+test_merged['PromoInterval']=test_merged['PromoInterval'].map(map_promo)
+'",0
+"#partitioning the date into day,month,year
+data_merged['day'] = data_merged['Date'].dt.day
+data_merged['month'] = data_merged['Date'].dt.month
+data_merged['year'] = data_merged['Date'].dt.year
+#data_merged['Date'].dt.strftime('%a')-",0
+"predict = []
+cas = LinearRegression().fit(x2_train, y2_train)
+pre_cas = cas.predict(x2_test)
+
+cas_poly = LinearRegression().fit(poly_x2_train, y2_train)
+pre_cas_poly = cas_poly.predict(poly_x2_test)
+
+rf_cas = GridSearchCV(rf, parameters, cv=5, verbose=2,scoring = scorer,n_jobs = -1)
+rf_cas.fit(x2_train, y2_train)
+pre_rf_cas = rf_cas.predict(x2_test)
+
+predict.append(pre_cas)
+predict.append(pre_cas_poly)
+predict.append(pre_rf_cas)",0
+"from sklearn.ensemble import RandomForestRegressor
+
+params_rf = {
+    'max_depth': [10, 30, 35, 50, 65, 75, 100],
+    'max_features': [.3, .4, .5, .6],
+    'min_samples_leaf': [3, 4, 5],
+    'min_samples_split': [8, 10, 12],
+    'n_estimators': [30, 50, 100, 200]
+}
+
+rf = RandomForestRegressor()
+rf_regressor = GridSearchCV(rf, params_rf, scoring='neg_root_mean_squared_error', cv = 10, n_jobs = -1)
+rf_regressor.fit(X_train, y_train)
+print(f'Optimal depth: {rf_regressor.best_params_[""max_depth""]}')
+print(f'Optimal max_features: {rf_regressor.best_params_[""max_features""]}')
+print(f'Optimal min_sample_leaf: {rf_regressor.best_params_[""min_samples_leaf""]}')
+print(f'Optimal min_samples_split: {rf_regressor.best_params_[""min_samples_split""]}')
+print(f'Optimal n_estimators: {rf_regressor.best_params_[""n_estimators""]}')
+print(f'Best score: {rf_regressor.best_score_}')'",0
+"train.fillna(method='ffill', inplace=True)
+train.tail().T",0
+"rf.fit(train_X, train_y)",0
+"# numeric_features_X = ['Lat','Long', 'province_encoded' ,'country_encoded','Mon','Day']
+numeric_features_X = ['province_encoded' ,'country_encoded','Mon','Day'] + population2020_numeric_list + gdp2020_numeric_list
+numeric_features_Y = ['ConfirmedCases', 'Fatalities']
+train_numeric_X = train[numeric_features_X]
+train_numeric_Y = train[numeric_features_Y]",0
+"df['year'] = df['datetime'].dt.year
+df.head()",0
+"avg_sales_customers =  df_train.groupby('Store')['Sales', 'Customers'].mean()
+avg_sales_customers.head()",0
+"closed_store_ids = df_test[""Id""][df_test[""Open""] == 0].values
+
+df_train['Year']       = df_train['Date'].apply(lambda x: int(x[:4]))
+df_train['Month']      = df_train['Date'].apply(lambda x: int(x[5:7]))
+df_train[""HolidayBin""] = df_train.StateHoliday.map({""0"": 0, ""a"": 1, ""b"": 1, ""c"": 1})
+
+del df_train['Date']
+del df_train['StateHoliday']
+
+df_train.head()'",0
+"#criando novas colunas usando data e hora
+df['year'] = df['datetime'].dt.year
+df['month'] = df['datetime'].dt.month
+df['day'] = df['datetime'].dt.day
+df['hour'] = df['datetime'].dt.hour
+df['dayofweek'] = df['datetime'].dt.dayofweek",0
+"X_train = train[['LotFrontage','LotArea']].fillna(0)
+X_test  = test[['LotFrontage','LotArea']].fillna(0)
+y_train = train['SalePrice']",0
+"%%time
+n_estimators=100
+xgb = XGBRegressor(n_estimators=n_estimators,max_depth=4,learning_rate =0.01 , booster = 'gbtree')
+xgb.fit(X_train ,Y_train ,eval_set=[(X_train, Y_train), (X_test, Y_test)] , verbose = False)
+score = xgb.evals_result()
+valid_0_error_new = np.amin(score['validation_0']['rmse'])
+valid_1_error_new = np.amin(score['validation_1']['rmse'])
+score_diff(valid_0_error , valid_1_error , valid_0_error_new , valid_1_error_new)
+valid_0_error = valid_0_error_new
+valid_1_error = valid_1_error_new",0
+"source = submission.copy()
+source = source.merge(submission_nn,on='ID')
+source",0
+"train_data[\'building_id\'] = train_data[\'building_id\'].apply(lambda x: 1 if x != ""0"" else 0)<br>",0
+"X  = train[['bathrooms','bedrooms','price','num_photos',
+            'num_features','num_description_words','rooms','rooms_per_price',
+            'bath_per_beds','latitude','longitude','building_count','manager_count','display_count']]
+y = train['labels']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, 
+                                                    random_state=7)",0
+"from xgboost import XGBRegressor
+xgb = XGBRegressor()
+xgb.fit(train, y)
+preds = predict(test)",0
+"group = df.groupby(['Province_State', 'Country_Region'])['Date'].count().reset_index()
+group",0
+"X_train = train_dataset[['Province_State','Country_Region','Date']]
+y_train = train_dataset[['ConfirmedCases','Fatalities']]
+
+classifier = BinaryRelevance(GaussianNB())
+
+# train
+classifier.fit(X_train, y_train[['Fatalities']])
+
+# predict
+predictions_fatalities = classifier.predict(test_dataset[['Province_State','Country_Region','Date']])
+
+# train
+classifier.fit(X_train, y_train[['ConfirmedCases']])
+
+# predict
+predictions_confirmed_cases = classifier.predict(test_dataset[['Province_State','Country_Region','Date']])
+",0
+"df['is_valid'] = np.where(df['Date']<'2020-03-29', False, True)",0
+"train_df['activity_category'] = train_df['activity_category'].astype('category').cat.codes
+columns = ['char_'+str(i) for i in range(1,11)]
+train_df[columns] = train_df[columns].apply(lambda x: x.astype('category').cat.codes)
+train_df['date'] = pd.to_datetime(train_df['date'])
+train_df['day'] = train_df['date'].apply(lambda x:x.day)
+train_df['year'] = train_df['date'].apply(lambda x:x.year)
+train_df['month'] = train_df['date'].apply(lambda x:x.month)
+train_df = train_df.drop(['date'],axis = 1)",0
+"df['Date'] = pd.to_datetime(df['Date'])
+df['Month'] = df.Date.apply(lambda dt: dt.month)
+df['Year'] = df.Date.apply(lambda dt: dt.year)
+df['WeekOfYear'] = df.Date.apply(lambda dt: dt.weekofyear)
+df['Day'] = df.Date.apply(lambda dt: dt.day)
+
+df['isMonthEnd'] = df.Date.apply(lambda dt: dt.is_month_end)
+df['isMonthStart'] = df.Date.apply(lambda dt: dt.is_month_start)
+df['isQuarterEnd'] = df.Date.apply(lambda dt: dt.is_quarter_end )
+df['isQuarterStart'] = df.Date.apply(lambda dt: dt.is_quarter_start)
+df['isYearEnd'] = df.Date.apply(lambda dt: dt.is_year_end)
+df['isYearStart'] = df.Date.apply(lambda dt: dt.is_year_start)",0
+"agc = AgglomerativeClustering(n_clusters=9)
+store_cluster = agc.fit_predict(df_store.fillna(1))
+store_cluster.shape",0
+"X_train = data.drop('median_house_value', axis=1)
+y_train = data.median_house_value",0
+"df = df.replace([np.inf, 'Infinity', 'infinity', 'inf'], 2**31-1)
+df = df.replace([np.nan, np.inf, 'NaN'], 0)
+dt = dt.replace([np.inf, 'Infinity', 'infinity', 'inf'], 2**31-1)
+dt = dt.replace([np.nan, 'NaN'], 0)",0
+"from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import GridSearchCV
+parameters = {'solver': ['lbfgs','sgd'], 'max_iter': [1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000 ], 'alpha': 10.0 ** -np.arange(1, 10), 'hidden_layer_sizes':np.arange(10, 15), 'random_state':[0,1,2,3,4,5,6,7,8,9]}
+mlpgridsearch = GridSearchCV(MLPClassifier(), parameters, n_jobs=-1)
+mlpgridsearch.fit(X_train,y_train)
+predsgridmlp = mlpgridsearch.predict(X_test1)
+from sklearn import metrics
+print(classification_report(y_test1, predsgridmlp, target_names=target_names))",0
+"CV = 5  # Cross Validate with 5 different folds of 20% data ( 80-20 split with 5 folds )
+
+#Create a data frame that will store the results for all 5 trials of the 3 different models
+cv_df = pd.DataFrame(index=range(CV * len(models)))
+entries = [] # Initially all entries are empty",0
+"created_time = pd.to_datetime(merge['created'],format='%Y-%m-%d %H:%M:%S')
+merge['month'] = created_time.dt.month
+merge['day'] = created_time.dt.day
+merge['hour'] = created_time.dt.hour
+merge['weekday'] = created_time.dt.weekday
+merge['week'] = created_time.dt.week
+merge['quarter'] = created_time.dt.quarter
+merge['weekend'] = ((merge['weekday'] == 5) | (merge['weekday'] == 6))
+merge['days_since'] = created_time.max() - created_time
+merge['days_since'] = (merge['days_since'] / np.timedelta64(1, 'D')).astype(int)
+
+features_to_encode = np.concatenate([features_to_encode, ['month', 'day', 'hour', 'weekday', 'week', 'quarter', 'hour', 'weekend']])
+features_to_encode = np.unique(features_to_encode)
+features_to_encode",0
+"from sklearn.model_selection import train_test_split
+
+X = resample_df.drop(columns = ['loss','loan_status'])
+Y = resample_df['loss']
+
+X_train, X_test, Y_train, Y_test = train_test_split( X, Y, test_size = 0.2, random_state = 1234, stratify = resample_df['loan_status'])
+print('training set = {} records, test set= {} records'.format(X_train.shape[0],X_test.shape[0]))",0
+"df['days_first_case']=(df['Date']-df['FirstCaseDate']).dt.days
+df['days_first_fatality']=(df['Date']-df['FirstFatalityDate']).dt.days",0
+"submission=pd.DataFrame({'ForecastId': test_df[""ForecastId""], 'ConfirmedCases': y_confirmed, 'Fatalities': y_fatal})'",0
+"numeric_feat = [""bathrooms"", ""bedrooms"", ""latitude"", ""longitude"", ""logprice"",
+             ""num_photos"", ""num_features"", ""num_description_words"",
+              ""created_month"", ""created_day""]
+for col in numeric_feat:
+    df[col] -= df[col].min()
+    df[col] /= df[col].max()",1
+"ross.prepare_sample_data(limit =10000 , testing_limit = 4000)
+ross.Polynomial_Regression(degrees = 3)",0
+"# process train and test<br>def process(data, isTest = False):<br>    # label encode some features<br>    mappings = {'0':0, 'a':1, 'b':2, 'c':3, 'd':4}<br>    data.StoreType.replace(mappings, inplace=True)<br>    data.Assortment.replace(mappings, inplace=True)<br>    data.StateHoliday.replace(mappings, inplace=True)<br>    <br>    # extract some features from date column  <br>    data['Month'] = data.Date.dt.month<br>    data['Year'] = data.Date.dt.year<br>    data['Day'] = data.Date.dt.day<br>    data['WeekOfYear'] = data.Date.dt.weekofyear<br>    <br>    # calculate competiter open time in months<br>    data['CompetitionOpen'] = 12 * (data.Year - data.CompetitionOpenSinceYear) + \\<br>        (data.Month - data.CompetitionOpenSinceMonth)<br>    data['CompetitionOpen'] = data['CompetitionOpen'].apply(lambda x: x if x > 0 else 0)<br>    <br>    # calculate promo2 open time in months<br>    data['PromoOpen'] = 12 * (data.Year - data.Promo2SinceYear) + \\<br>        (data.WeekOfYear - data.Promo2SinceWeek) / 4.0<br>    data['PromoOpen'] = data['PromoOpen'].apply(lambda x: x if x > 0 else 0)<br>                                                 <br>    # Indicate whether the month is in promo interval<br>    month2str = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', \\<br>             7:'Jul', 8:'Aug', 9:'Sept', 10:'Oct', 11:'Nov', 12:'Dec'}<br>    data['month_str'] = data.Month.map(month2str)<br><br>    def check(row):<br>        if isinstance(row['PromoInterval'],str) and row['month_str'] in row['PromoInterval']:<br>            return 1<br>        else:<br>            return 0<br>        <br>    data['IsPromoMonth'] =  data.apply(lambda row: check(row),axis=1)    <br>    <br>    # select the features we need<br>    features = ['Store', 'DayOfWeek', 'Promo', 'StateHoliday', 'SchoolHoliday',<br>       'StoreType', 'Assortment', 'CompetitionDistance',<br>       'CompetitionOpenSinceMonth', 'CompetitionOpenSinceYear', 'Promo2',<br>       'Promo2SinceWeek', 'Promo2SinceYear', 'Year', 'Month', 'Day',<br>       'WeekOfYear', 'CompetitionOpen', 'PromoOpen', 'IsPromoMonth']  <br>    if not isTest:<br>        features.append('Sales')<br>        <br>    data = data[features]<br>    return data<br><br>train = process(train)<br>valid = process(valid)<br>train_total = process(train_total)<br>x_test = process(test,isTest = True)    ",0
+"texts = [""Hooli stock price soared after a dip in PiedPiper revenue growth."",<br>         ""Captain Tsubasa scores a magnificent goal for the Japanese team."",<br>         ""Merryweather mercenaries are sent on another mission, as government oversight groups call for new sanctions."",<br>         ""Beyonc releases a new album, tops the charts in all of south-east Asia!"",<br>         ""You won\'t guess what the latest trend in data analysis is!""]<br>text_features = tfidf.transform(texts)<br>predictions = model.predict(text_features)<br>for text, predicted in zip(texts, predictions):<br>  print(\'""{}""\'.format(text))<br>  print(""  - Predicted as: \'{}\'"".format(id_to_category[predicted]))<br>  print("""")",0
+"def PrepareFeatures(TestOrTrain):<br>    source = f\'../input/{TestOrTrain}.json\'<br>    data = pd.read_json(source)<br>    # Some noise in price feature we saw in Part 1:<br>    ulimit = np.percentile(data.price.values, 99)<br>    data[\'price\'][data[\'price\']>ulimit] = ulimit<br>    # Get Different features as in Part 1:<br>    data[\'hasDesc\'] = data[\'description\'].apply(lambda x: len(x.strip())!=0)<br>    data[""nFeatures""] = data[""features""].apply(len)<br>    data[""nDescWords""] = data[""description""].apply(lambda x: len(x.split("" "")))<br>    data[\'nPhotos\'] = data[\'photos\'].apply(lambda x: min(10, len(x)))<br>    data[\'created\'] = pd.to_datetime(data[\'created\'])<br>    data[\'month\'] = data[\'created\'].dt.month<br>    data[\'weekday\'] = data[\'created\'].apply(lambda x: x.weekday())<br>    return data<br><br># Using categorical (more sparse) data, we ispected in Part 1:<br>def CreateCategFeat(data, features_list):<br>    f_dict = {\'hasParking\':[\'parking\', \'garage\'], \'hasGym\':[\'gym\', \'fitness\', \'health club\'],<br>              \'hasPool\':[\'swimming pool\', \'pool\'], \'noFee\':[\'no fee\', ""no broker\'s fees""],<br>              \'hasElevator\':[\'elevator\'], \'hasGarden\':[\'garden\', \'patio\', \'outdoor space\'],<br>              \'isFurnished\': [\'furnished\', \'fully  equipped\'], <br>              \'reducedFee\':[\'reduced fee\', \'low fee\'],<br>              \'hasAC\':[\'air conditioning\', \'central a/c\', \'a/c\', \'central air\', \'central ac\'],<br>              \'hasRoof\':[\'roof\', \'sundeck\', \'private deck\', \'deck\'],<br>              \'petFriendly\':[\'pets allowed\', \'pet friendly\', \'dogs allowed\', \'cats allowed\'],<br>              \'shareable\':[\'shares ok\'], \'freeMonth\':[\'month free\'],<br>              \'utilIncluded\':[\'utilities included\']}<br>    for feature in features_list:<br>        data[feature] = False<br>        for ind, row in data.iterrows():<br>            for f in row[\'features\']:<br>                f = f.lower().replace(\'-\', \'\')<br>                if any(e in f for e in f_dict[feature]):<br>                    data.at[ind, feature]= True",0
+"history = model.fit(X_train_scale,
+                   y_train_ohe,
+                   epochs=1000,
+                   batch_size=8192,
+                   validation_data=(X_test_scale, y_test_ohe))",0
+"#find minimum date
+min_date=pd.concat([people['date'],act_train['date'],act_test['date']]).min()
+min_date",0
+"best_tree.fit(train,target)",0
+"# Decision Tree - CART
+regressor = DecisionTreeRegressor(random_state = 0)
+regressor.fit(x_train, y_train)
+y_predicted_d = regressor.predict(x_test)
+mse = mean_squared_error(y_test, y_predicted_d)
+r = r2_score(y_test, y_predicted_d)
+mae = mean_absolute_error(y_test,y_predicted_d)
+print(""Mean Squared Error:"",mse)
+print(""R score:"",r)
+print(""Mean Absolute Error:"",mae)",0
+"%%time
+params = {
+        ""objective"" : ""regression"", 
+        ""metric"" : ""mae"", 
+        ""num_leaves"" : 60, 
+        ""learning_rate"" : 0.01, 
+        ""bagging_fraction"" : 0.9,
+        ""bagging_seed"" : 0, 
+        ""num_threads"" : 4,
+        ""colsample_bytree"" : 0.5, 
+        'lambda_l2':9
+}
+
+model = lgb.train(  params, 
+                    train_set = train_set,
+                    num_boost_round=10000,
+                    early_stopping_rounds=200,
+                    verbose_eval=100, 
+                    valid_sets=[train_set,val_set]
+                  )
+
+'",0
+"lr.fit(x_train_scaler,y_train)",0
+"data_average_sales_customers = pd.DataFrame({'Sales':  average_sales_customers['Sales'],
+                                         'Customers': average_sales_customers['Customers']}, 
+                                         index = average_sales_customers.index)",0
+"#Combine categorical and non-categorical dataframe together
+def filter_x_df(x):
+    df = x.copy()
+    all_filter_col = []
+    
+    for keep in select_cat_col_name[select_cat_col_name.isin(keep_cols)]:
+        filter_col = [col for col in df.columns if col.startswith(str(keep))]
+        for col in filter_col : 
+            if col not in keep_cols:
+                all_filter_col.append(col)
+        
+    drop_cat_df = df.drop(columns = cat_cols)
+    
+    new_df = pd.concat([drop_cat_df[best_X_col_name],drop_cat_df[all_filter_col]],axis = 1)
+    return new_df",0
+"predict = []
+reg = LinearRegression().fit(x1_train, y1_train)
+pre_reg = reg.predict(x1_test)
+
+reg_poly = LinearRegression().fit(poly_x1_train, y1_train)
+pre_reg_poly = reg_poly.predict(poly_x1_test)
+
+rf_reg = GridSearchCV(rf, parameters, cv=5, verbose=2,scoring = scorer,n_jobs = -1)
+rf_reg.fit(x1_train, y1_train)
+pre_rf_reg = rf_reg.predict(x1_test)
+
+predict.append(pre_reg)
+predict.append(pre_reg_poly)
+predict.append(pre_rf_reg)",0
+"mean_error = []
+for day in range(2, train_baseline.Day.max() + 1):
+    val = train_baseline[train_baseline.Day == day]
+    p = val.Last_Week_Sales.values
+    error = rmspe(val.Sales.values, p)
+    mean_error.append(error)
+    
+print('Mean Error = %.5f' % np.mean(mean_error))",0
+"b""import numpy as np\n#train=train[(train.age > 14) & (train.age < 110)]# modele sadece 14 yandan byk ve 110 yandan kkleri dahil edebilirim.\n#test=test[(test.age > 14) & (test.age < 110)]\ntrain[(train.age < 14) & (train.age > 110)]=np.nan\ntest[(test.age < 14) & (test.age > 110)]=np.nan\ntrain['age'].fillna(train['age'].mean(), inplace=True)\ntest['age'].fillna(train['age'].mean(), inplace=True)""",1
+time_large = df_events.groupby('device_id')['hour'].apply(lambda x: max(x)),0
+"df[""num_photos""] = df[""photos""].apply(len)
+df[""num_features""] = df[""features""].apply(len)
+df[""num_description_words""] = df[""description""].apply(lambda x: len(x.split("" "")))
+df[""created""] = pd.to_datetime(df[""created""])
+df[""created_year""] = df[""created""].dt.year
+df[""created_month""] = df[""created""].dt.month
+df[""created_day""] = df[""created""].dt.day
+",0
+df_all['hour'] = df['datetime'].dt.hour,0
+"from sklearn.model_selection import GridSearchCV, ShuffleSplit
+from sklearn.metrics import make_scorer
+
+from sklearn.tree import DecisionTreeRegressor
+
+regressor = DecisionTreeRegressor(random_state=2)
+
+cv_sets = ShuffleSplit(n_splits=5, test_size=0.2)    
+params = {'max_depth':range(10,40,2)}
+scoring_fnc = make_scorer(neg_rmspe)
+
+grid = GridSearchCV(regressor,params,scoring_fnc,cv=cv_sets)
+grid = grid.fit(train[features], np.log1p(train.Sales))
+
+DTR = grid.best_estimator_",0
+"from xgboost import XGBRegressor
+from sklearn.ensemble import GradientBoostingRegressor
+
+gbRegr = GradientBoostingRegressor(max_depth=3, random_state=42)
+gbRegr.fit(x_train, y)
+prediction_rr = gbRegr.predict(x_test)
+",0
+"from  xgboost import XGBClassifier
+
+xgb = XGBClassifier(gamma=0, learning_rate=0.1, max_depth=100, n_estimators=100)
+xgb.fit(filter_X_train,Y_train)
+
+xgb_y_pred_train = xgb.predict(filter_X_train)
+xgb_y_pred_test = xgb.predict(filter_X_test)
+
+scores_xg = cross_val_score(estimator = rf, y = Y_train, X = filter_X_train, cv=5)
+print('Cross Validation Score:', np.mean(scores_xg))",0
+"# Criando novas colunas com a dada e hora (feature engeneering)
+treino['year'] = treino['datetime'].dt.year
+treino['month'] = treino['datetime'].dt.month
+treino['day'] = treino['datetime'].dt.day
+treino['dayofweek'] = treino['datetime'].dt.dayofweek
+treino['hour'] = treino['datetime'].dt.hour
+",0
+"submission = pd.concat([rowid,loc],axis = 1)",0
+"#treinar o modelo com os dados de treino
+
+rf.fit(train[feats], train['count'])",0
+"SUB_FIRST = sub_df[""Date""].min()
+SUB_DAYS = (sub_df[""Date""].max() - sub_df[""Date""].min()).days + 1
+
+sub_df = dev_df.append(sub_df, sort=False)
+
+for col in TARGETS:
+    sub_df[""prev_{}"".format(col)] = sub_df.groupby(loc_group)[col].shift()
+    
+sub_df = sub_df[sub_df[""Date""] >= SUB_FIRST].copy()
+sub_df[""ForecastId""] = sub_df[""ForecastId""].astype(np.int16)
+sub_df = predict(sub_df, SUB_FIRST, SUB_DAYS)
+
+for col in TARGETS:
+    sub_df[col] = np.expm1(sub_df[""pred_{}"".format(col)])
+    
+sub_df.head()",0
+"def norm(x):
+    return (x - train_stats['mean']) / train_stats['std']
+normed_train_data = norm(OH_X_train)
+normed_test_data = norm(OH_X_test)",1
+"# Store the entries into the results dataframe and name its columns    
+BBC Ncv_df = pd.DataFrame(entries, columns=['model_name', 'fold_idx', 'accuracy'])",0
+"b""#  np.log   train  ,     exp  .\nsample['count'] = np.exp(preds)\nsample.head()""",0
+"def get_iso3_util(country_name):
+    try:
+        country = pycountry.countries.get(name=country_name)
+        return country.alpha_3
+    except:
+        if 'Congo' in country_name:
+            country_name = 'Congo'
+        elif country_name == 'Diamond Princess' or country_name == 'Laos':
+            return country_name
+        elif country_name == 'Korea, South':
+            country_name = 'Korea, Republic of'
+        elif country_name == 'Taiwan*':
+            country_name = 'Taiwan'
+        country = pycountry.countries.search_fuzzy(country_name)
+        return country[0].alpha_3
+
+d = {}
+def get_iso3(country):
+    if country in d:
+        return d[country]
+    else:
+        d[country] = get_iso3_util(country)
+    
+df_map['iso_alpha'] = df_map.apply(lambda x: get_iso3(x['Country_Region']), axis=1)",0
+"language_distance = {'language' : ['en', 'du', 'fr', 'es'],
+                     'levenshtein_distance_from_en' : [0, 72.61, 92.06, 92.25]}
+
+language_distance = pd.DataFrame(language_distance)
+
+train_users = pd.merge(train_users, language_distance, on = 'language', how = 'left')
+test_users = pd.merge(test_users, language_distance, on = 'language', how = 'left')
+
+",0
+"tree_model1 =DecisionTreeClassifier()
+tree_model1.fit(x_train_imp,y_train_imp)
+tree_predict=tree_model1.predict(x_test_imp)
+tree_model1.score(x_test_imp,y_test_imp)",0
+"def textlen(train):
+    k = train['Text'].apply(lambda x: len(str(x).split()))
+    l = train['Text'].apply(lambda x: len(str(x)))
+    return k, l
+
+train['Text_no_word'], train['Text_no_char'] = textlen(train)
+test['Text_no_word'], test['Text_no_char'] = textlen(test)",0
+"devicelabels = (deviceapps[['device_id','app']]
+                .merge(applabels[['app','label']])
+                .groupby(['device_id','label'])['app'].agg(['size'])
+                .merge(gatrain[['trainrow']], how='left', left_index=True, right_index=True)
+                .merge(gatest[['testrow']], how='left', left_index=True, right_index=True)
+                .reset_index())
+devicelabels.head()",0
+"df['Minute']=df['Minute'].apply(lambda x:int(x))
+df['Minute']=df['Minute'].apply(lambda x : 'low' if x <31 else 'high')
+
+df_test['Minute']=df_test['Minute'].apply(lambda x:int(x))
+df_test['Minute']=df_test['Minute'].apply(lambda x : 'low' if x <31 else 'high')
+",0
+"from sklearn.model_selection import train_test_split 
+from sklearn import metrics 
+X_train = df_train.drop(""count_Log"", axis = 1).values 
+target_label = df_train[""count_Log""].values 
+X_test = df_test.values 
+X_tr, X_vld, y_tr, y_vld = train_test_split(X_train, target_label, test_size = 0.2, random_state = 2000)",0
+train.groupby('Species').sum().WnvPresent,0
+"# scale features independently
+case_scaler = MinMaxScaler(feature_range=(0, 100))
+fat_scaler = MinMaxScaler(feature_range=(0, 100))
+train_data['ConfirmedCases_scaled'] = case_scaler.fit_transform(train_data['ConfirmedCases'].values.reshape(-1,1))
+train_data['Fatalities_scaled'] = fat_scaler.fit_transform(train_data['Fatalities'].values.reshape(-1,1))",0
+"from sklearn.kernel_approximation import AdditiveChi2Sampler
+sc = AdditiveChi2Sampler()
+X = sc.fit_transform(X)
+X_test = sc.transform(X_test)",1
+"path_base = '/kaggle/working/train'
+batch_size = 64
+train_data_generator = ImageDataGenerator(
+            rescale=1./255.,
+            validation_split=0.2,
+            horizontal_flip=True
+            )
+train_generator = train_data_generator.flow_from_dataframe(dataframe=train_images,
+            directory=""./train/"",
+            x_col=""path"",
+            y_col=""label"",
+            subset=""training"",
+            batch_size=batch_size,
+            shuffle=True,
+            target_size=(32,32),
+            class_mode=""categorical"")'",0
+"columns = ['SchoolHoliday', 'StateHoliday', 'Promo']",0
+"train_set['temp_weather_1'] = train_set['temp'] * train_set['weather_1']
+train_set['temp_weather_2'] = train_set['temp'] * train_set['weather_2']
+train_set['temp_weather_3'] = train_set['temp'] * train_set['weather_3']
+train_set['temp_weather_4'] = train_set['temp'] * train_set['weather_4']",0
+"total_sales_customers =  df_train.groupby('Store')['Sales', 'Customers'].sum()
+total_sales_customers.head()",0
+"test_type_dummies=pd.get_dummies(test_df['Type'])
+test_df=pd.concat([test_df,test_type_dummies],axis=1)",0
+"tokenizer.add_tokens(['[A]', '[B]', '[P]'])
+def insert_tag(row):
+    to_be_inserted = sorted([
+        (row[""A-offset""], "" [A] ""),
+        (row[""B-offset""], "" [B] ""),
+        (row[""Pronoun-offset""], "" [P] "")
+    ], key=lambda x: x[0], reverse=True)
+    text = row[""Text""]
+    for offset, tag in to_be_inserted:
+        text = text[:offset] + tag + text[offset:]
+    return text
+
+def tokenize(text, tokenizer):
+    entries = {}
+    final_tokens = []
+    for token in tokenizer.tokenize(text):
+        if token in (""[A]"", ""[B]"", ""[P]""):
+            entries[token] = len(final_tokens)
+            continue
+        final_tokens.append(token)
+    return final_tokens, (entries[""[A]""], entries[""[B]""], entries[""[P]""])
+
+def target(row):
+    if int(row['A-coref']) == 1:
+        return 0
+    elif int(row['B-coref']) == 1:
+        return 1
+    else:
+        return 2
+""""""
+The lower part was taken from 
+            [PyTorch] BERT + EndpointSpanExtractor + KFold
+""""""
+def children(m):
+    return m if isinstance(m, (list, tuple)) else list(m.children())
+
+def set_trainable_attr(m, b):
+    m.trainable = b
+    for p in m.parameters():
+        p.requires_grad = b
+
+def apply_leaf(m, f):
+    c = children(m)
+    if isinstance(m, nn.Module):
+        f(m)
+    if len(c) > 0:
+        for l in c:
+            apply_leaf(l, f)
+            
+def set_trainable(l, b):
+    apply_leaf(l, lambda m: set_trainable_attr(m, b))'",0
+"train_wk1['country+province'] = train_wk1['Country/Region'].fillna('') + '-' + train_wk1['Province/State'].fillna('')
+train_df_pop['country+province'] = train_df_pop['Country_Region'].fillna('') + '-' + train_df_pop['Province_State'].fillna('')
+test_df_pop['country+province'] = test_df_pop['Country_Region'].fillna('') + '-' + test_df_pop['Province_State'].fillna('')",0
+"y = data_train.revenue
+############################################
+X = data_train.drop(columns=['revenue'])",0
+"df = pd.concat([df, preds], axis=1)",0
+"y=train[""Weekly_Sales""]",0
+"train_data3 = train_data2<br>train_data3[""rooms_per_household""] = train_data3[""total_rooms""]/train_data3[""households""]<br>train_data3[""bedrooms_per_room""] = train_data3[""total_bedrooms""]/train_data3[""total_rooms""]<br>train_data3[""population_per_household""] = train_data3[""population""]/train_data3[""households""]<br>train_data3[""income_per_person""] = train_data3[""median_income""]/train_data3[""population_per_household""]<br>train_data3[\'mean_rooms\'] = train_data3[\'total_rooms\']/train_data3[\'households\']<br>train_data3[\'rooms_per_person\'] = train_data3[\'total_rooms\']/train_data3[\'population\']<br>train_data3[\'mean_bedrooms\'] = train_data3[\'total_bedrooms\']/train_data3[\'households\']<br>train_data3[\'bedrooms_per_person\'] = train_data3[\'total_bedrooms\']/train_data3[\'households\']<br>train_data3[\'persons_per_household\'] = train_data3[\'population\']/train_data3[\'households\']<br>train_data3[\'total_income\'] = train_data3[\'median_income\']*train_data3[\'households\']",0
+"best_n_estimators = gsearch.best_params_.get('n_estimators')
+best_n_estimators",0
+"lasso.fit(xTrain,yTrain)
+pred_lasso = lasso.predict(testData).tolist()",0
+"minmaxfeatures.sort_values(by=['mindate', 'Id'], inplace=True)
+minmaxfeatures['min_Id_rev'] = -minmaxfeatures.Id.diff().shift(-1)
+minmaxfeatures['min_Id'] = minmaxfeatures.Id.diff()",0
+"final_model.fit(X_train, y_train)
+y_pred = final_model.predict(X_test)",0
+"submission = pd.DataFrame({
+    'Id':test_id,
+    'Cover_Type':test_pred
+})
+submission.head()",0
+"test_set_rf_cont = test_set_rf[cont_vars]
+
+scaler.fit(test_set_rf_cont)
+test_set_rf_cont = scaler.transform(test_set_rf_cont)
+test_set_rf_cont = pd.DataFrame(test_set_rf_cont, columns=cont_vars)
+test_set_rf_cate = test_set_rf[cate_vars]
+
+scaled_test_set_rf = pd.concat([test_set_rf_cont, test_set_rf_cate], axis=1)
+scaled_test_set_rf.head()",0
+"final_model = Pipeline([('pre_process', cat_boost_pre_process),
+                        ('catboost', catboost_clf)])
+final_model.fit(X_train, y_train)",0
+"from sklearn.model_selection import GridSearchCV
+from xgboost import XGBRegressor
+gsearch = GridSearchCV(estimator=XGBRegressor(random_state=my_randome_state),
+                       param_grid = parameters, 
+                       scoring='neg_root_mean_squared_error',
+                       n_jobs=4,cv=5, verbose=7)
+gsearch.fit(normed_train_data, y_train)",0
+"# 
+# attr
+from sklearn.linear_model import LinearRegression,Ridge,Lasso
+
+
+lr = LinearRegression()
+
+""""""
+yLabelsnp.lognp.log1p
+np.log1pnp.log1+ xx0log - np.log1p
+""""""
+yLabelslog = np.log1p(yLabels)
+#
+lr.fit(train,yLabelslog)
+#
+preds = lr.predict(train)
+#rmsleelementnp.exppredsloglog
+print('RMSLE Value For Linear Regression: {}'.format(rmsle(np.exp(yLabelslog),np.exp(preds),False)))'",0
+"b""scores, tst_scr = validation_curve(RandomForestRegressor(n_estimators=120, n_jobs = 4), X[:20000], \\\n                                   y[:20000], 'max_features', parametrs, cv=3, scoring='r2', verbose=2)""",0
+"# Associate Category names with numerical index and save it in new column category_id
+df['category_id'] = df['Category'].factorize()[0]
+
+#View first 10 entries of category_id, as a sanity check
+df['category_id'][0:10]",0
+"# only XGBoost
+xgb = XGBClassifier(max_depth=4, learning_rate=0.03, n_estimators=100,
+                    objective='multi:softprob', subsample=0.6, colsample_bytree=0.6, seed=40)
+xgb.fit(X_train, y_trans)
+XGBC_pred_test = xgb.predict(X_test)
+XGBC_pred_test_prob=xgb.predict_proba(X_test)",0
+"
+dt=tree.DecisionTreeClassifier()
+dt.fit(train_merge4,target)
+dt.predict(test_merge4)
+accuracy_score(pd.DataFrame(dt.predict(train_merge4)),target)",0
+"from sklearn.preprocessing import LabelEncoder
+# Processing the categorical columns to provide vector form of feature
+class DataFrameProcess:
+    def __init__(self,df,col):
+        self.df =df
+        self.col=col
+    def dataEncoding(self):
+        if self.df[self.col].dtype.name == 'object' or self.df[self.col].dtype.name == 'category':
+            le = LabelEncoder()
+            self.df[self.col] = le.fit_transform(self.df[self.col])    
+
+
+def data_transform(df):  
+    for col in df.columns:
+        data_prcs = DataFrameProcess(df,col)
+        data_prcs.dataEncoding()  
+data_transform(x_train) 
+data_transform(x_test)",0
+"df['dow'] = df['datetime'].dt.dayofweek
+df.head()",0
+"# 
+
+df_all = pd.concat([df_train, df_test], axis=0)   # axis=0 : '",0
+"np.random.seed(42)
+samples = np.random.choice(piv_train, 50000)
+X_train = vals[samples]
+y_train = le.fit_transform(labels)[samples]",0
+"##Now we will run a few machine learning techiniques to see which one is the most applicable
+
+#Linear Regression
+linearRegressor = LinearRegression()
+linearRegressor.fit(x_train, y_train)
+y_predicted = linearRegressor.predict(x_test)
+mse = mean_squared_error(y_test, y_predicted)
+r = r2_score(y_test, y_predicted)
+mae = mean_absolute_error(y_test,y_predicted)
+print(""Mean Squared Error:"",mse)
+print(""R score:"",r)
+print(""Mean Absolute Error:"",mae)",0
+df.groupby(['StateHoliday'])['Open'].agg('mean'),0
+"# concat train and test
+df_traintest = pd.concat([df_train, df_test])
+print(df_train.shape, df_test.shape, df_traintest.shape)",0
+"X_train= train_split
+X_test= val_split
+y_train= label_train_split
+y_test= label_val_split
+model= xgb.XGBClassifier(seed= 42)
+
+eval_set = [(X_train, y_train), (X_test, y_test)]
+model.fit(X_train, y_train, eval_metric=""auc"", eval_set=eval_set, verbose=True)",0
+"data_train['Year'] = data_train['Date'].apply(lambda x: int(x[:4]))
+data_train['Month'] = data_train['Date'].apply(lambda x: int(x[5:7]))
+data_train.head()",0
+"from sklearn.linear_model import LinearRegression,Ridge,Lasso
+from sklearn.model_selection import GridSearchCV
+from sklearn import metrics
+import warnings
+pd.options.mode.chained_assignment = None
+warnings.filterwarnings(""ignore"", category=DeprecationWarning)
+
+# Initialize logistic regression model
+lModel = LinearRegression()
+
+# Train the model
+yLabelsLog = np.log1p(yLabels)
+lModel.fit(X = dataTrain,y = yLabelsLog)
+
+# Make predictions
+preds = lModel.predict(X= dataTrain)
+print (""RMSLE Value For Linear Regression: "",rmsle(np.exp(yLabelsLog),np.exp(preds),False))",0
+"#drop colunas empty e index ""Id""
+na_adult=adult.set_index(""Id"").dropna()",0
+"fwd = df[['Store']+columns].sort_index(ascending=False
+                                      ).groupby(""Store"").rolling(7, min_periods=1).sum()'",0
+"new_train, new_test = transform_dataset(
+    train[col4train], test[col4train], 
+    one_hot)
+print(new_train.shape, new_test.shape)",0
+Yadult = nadult.Target,0
+"df_data['CompetitionDistance'].fillna(df_data['CompetitionDistance'].median(), inplace = True)
+df_test['CompetitionDistance'].fillna(df_data['CompetitionDistance'].median(), inplace = True)",1
+"sgd = SGDClassifier(shuffle = True,random_state = 171)
+sgd.fit(x_train_3,y_train_3)
+sgd.predict(x_train_3)
+sgd.score(x_test_3,y_test_3)",0
+"map_df=map_df.merge(code_df,left_on='Country',right_on='CLDR display name')",0
+"from sklearn.ensemble import GradientBoostingRegressor
+
+gb = GradientBoostingRegressor()
+gb_params={'max_depth':range(1,11,1),'n_estimators':[1,10,100]}
+grid_gb=GridSearchCV(gb,gb_params,scoring=rmsle_scorer,cv=5)
+grid_gb.fit(train,yLabelslog)
+preds = grid_gb.predict(train)
+print('RMSLE Value for GradientBoosting {}'.format(rmsle(np.exp(yLabelslog),np.exp(preds),False)))",0
+"#armazena todos os dados de treino e de teste (numericos e categoricos)
+X_adult = na_adult.iloc[:,:-1]
+Y_adult = na_adult.income",0
+"xgb = XGBClassifier()
+xgb.fit(x_train,y_train)",0
+"rfr.fit(x_train, y_train)
+pre = rfr.predict(x_test)
+mean_squared_error(y_test, pre)",0
+"from sklearn.neighbors import KNeighborsClassifier<br><br>knn = KNeighborsClassifier(n_neighbors=3, p=2)<br><br>#knn.fit(states.drop(""state"", axis=""columns""), states[\'state\'])<br>knn.fit(states[[""latitude"", ""longitude""]], states[\'state\'])<br><br><br>#trainHouses[""state""] = knn.predict(trainHouses.drop(trainHouses.columns.drop([""latitude"", ""longitude""]), axis=""columns""))<br>#prediction = knn.predict(trainHouses.drop(trainHouses.columns.drop([""latitude"", ""longitude""]), axis=""columns""))<br>prediction = knn.predict(trainHouses[[""latitude"", ""longitude""]])<br><br>#print(prediction.value_counts())<br>print(np.unique(prediction,return_counts=True))",0
+"minmaxfeatures = None
+for chunk in pd.read_csv('../input/bosch-production-line-performance/train_date.csv.zip',usecols=usefuldatefeatures,chunksize=50000,low_memory=False):
+    features = chunk.columns.values.tolist()
+    features.remove('Id')
+    df_mindate_chunk = chunk[['Id']].copy()
+    df_mindate_chunk['mindate'] = chunk[features].min(axis=1).values
+    df_mindate_chunk['maxdate'] = chunk[features].max(axis=1).values
+    df_mindate_chunk['min_time_station'] =  chunk[features].idxmin(axis = 1).apply(lambda s: int(s.split('_')[1][1:]) if s is not np.nan else -1)
+    df_mindate_chunk['max_time_station'] =  chunk[features].idxmax(axis = 1).apply(lambda s: int(s.split('_')[1][1:]) if s is not np.nan else -1)
+    minmaxfeatures = pd.concat([minmaxfeatures, df_mindate_chunk])
+
+del chunk
+gc.collect()",0
+"train['Quarantine'] = 0
+train['Schools'] = 0
+train['Restrictions'] = 0
+
+train.loc[(train['Date'] >= '2020-03-20') &(train.Country_Region == 'Argentina'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-16') &(train.Country_Region == 'Austria'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-18') &(train.Country_Region == 'Belgium'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-01-24') &(train.Country_Region == 'China'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-25') &(train.Country_Region == 'Colombia'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-16') &(train.Country_Region == 'Denmark'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-17') &(train.Country_Region == 'France'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-21') &(train.Country_Region == 'Germany'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-23') &(train.Country_Region == 'India'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-19') &(train.Country_Region == 'Israel'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-08') &(train.Country_Region == 'Italy'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-18') &(train.Country_Region == 'Malaysia'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-23') &(train.Country_Region == 'New Zealand'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-15') &(train.Country_Region == 'Peru'), 'Quarantine' ] = 1
+train.loc[(train['Date'] >= '2020-03-15') &(train.Country_Region == 'Spain'), 'Quarantine' ] = 1
+
+train.loc[(train['Date'] >= '2020-03-19') &(train.Country_Region == 'Israel'), 'Schools' ] = 1
+
+train.loc[(train['Date'] >= '2020-03-19') &(train.Country_Region == 'Israel'), 'Restrictions' ] = 1
+
+train.drop(['Quarantine_date', 'Schools_date', 'Restrictions_date'], axis = 1, inplace = True)",0
+"sub = pd.DataFrame()
+sub[""listing_id""] = df[""listing_id""]
+for label in [""high"", ""medium"", ""low""]:
+    sub[label] = y[:, labels2idx[label]]
+sub.to_csv(""submission_ky.csv"", index=False)
+",0
+"data_merged = data.merge(store,on='Store',how='left')
+data_merged.head()",0
+"modelscore_df.plot.bar(x='classifier code', y='Accuracy score', rot=0)",0
+train_data['clean_text'] = train_data['text'].apply(data_cleaner),0
+"x_train = train.drop(columns=[""Id"",""revenue"",""Open Date""],axis=1)
+y_train = train[""revenue""]
+x_test = test.drop(columns=[""Id"",""Open Date""],axis=1)
+x_train.shape,x_test.shape,y_train.shape",0
+"test['Hour'] = test['Date'].dt.hour
+test['Day_of_Month'] = test['Date'].dt.day
+test['Day_of_Week'] = test['Date'].dt.dayofweek
+test['Month'] = test['Date'].dt.month",0
+"# Convert result to actual count
+df_test[""count""] = np.expm1(result)",0
+"X = pd.DataFrame(data=X, columns=tfidf.get_feature_names())",0
+"X = data.drop(['result'], axis=1)
+y = data['result']",0
+"y_train = df_train.revenue
+X_train = df_train.drop(columns=['revenue'], axis=1)",0
+"# ConfirmedCases and Fatalities column groupby Country Region
+df_xtrain = xtrain.groupby(['Country_Region'])[['ConfirmedCases', 'Fatalities']].max()
+print(df_xtrain.sort_values(by=['ConfirmedCases','Fatalities'],ascending=False).head(10))",0
+"#Classifiers<br>#Choosing best one<br>#/////////////////////////<br># model = Sequential()<br># model.add(Dense(20, input_dim=input_dim))<br># model.add(Activation(\'relu\'))<br># model.add(Dropout(0.15))<br># model.add(Dense(10))<br># model.add(Activation(\'relu\'))<br># model.add(Dropout(0.25))<br># model.add(Dense(1))<br># model.add(Activation(\'softmax\'))<br>#///////////////<br>#SVM-RBF<br> #from sklearn.svm import SVC<br> #classifier = SVC(kernel = \'rbf\')<br> #classifier.fit(X, y)<br>#<br> #y_predsvm = classifier.predict(test_x)<br>#SVC//////////////////<br><br> #clf = SVC()<br> #clf.fit(X,y)<br> #y_predsvc= clf.predict(test_x)<br># preds = model.predict_classes(test_x, verbose=0)<br>#////////////////////<br>#Gaussian Naive Bayes<br>from sklearn.naive_bayes import GaussianNB<br>gnb = GaussianNB()<br>gnb.fit(X, y)<br>#print(""gnb:"", gnb.score(X,y))<br>#y_predgnb = gnb.predict(test_x)<br>#<br># model.compile(optimizer=\'rmsprop\', loss=\'mae\')<br>#<br>#<br># model.fit(X, y, epochs=10)<br>#//////////////////////////<br>#KNN<br>knn = KNeighborsClassifier(n_neighbors = 5, metric = \'minkowski\', p = 2)<br>knn.fit(X, y)<br>#y_predknn = knn.predict(test_x)<br>#print(""knn:"",knn.score(X,y))<br>#/////////////////<br>#Random Forest<br>from sklearn.ensemble import RandomForestClassifier<br>rf= RandomForestClassifier(n_estimators = 100, criterion = \'entropy\')<br>rf.fit(X,y)<br>#y_predrf = rf.predict(test_x)<br>#print(""rf:"",rf.score(X,y))<br>#/////////////////////<br>#Gradient Boosting<br>from sklearn.ensemble import GradientBoostingClassifier<br>gb = GradientBoostingClassifier(random_state=0, learning_rate=0.01)<br>gb.fit(X, y)<br>#y_predgb = gb.predict(test_x)<br>#print(""gb:"", gb.score(X,y))<br>#////////////////<br># Logistic Regression<br>from sklearn.linear_model import LogisticRegression<br>lr = LogisticRegression()<br>lr.fit(X, y)<br>#y_predlr = lr.predict(test_x)<br>#print(""lr:"",lr.score(X,y))<br>#y_pred = gb.predict(test_x)<br>#y_pred = classifier.predict(test_x)<br>#//////////QDA<br>qda= QuadraticDiscriminantAnalysis()<br>qda.fit(X,y)<br>#y_predqda = qda.predict(test_x)<br>#///////<br>#SVM<br>#svm = svm.SVC(kernel=\'linear\', C = 1.0)<br>#svm.fit(X,y)<br>#y_predsvm = svm.predict(test_x)<br>#print(""svm"",svm.score(X,y))<br># print(clf.predict(test_x))<br><br>#/////////////<br>#Adaboost<br>adb = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),algorithm=""SAMME"",n_estimators=200)<br><br>adb.fit(X,y)<br>#y_predadb = adb.predict(test_x)<br>#print(""adb:"",adb.score(X,y))<br>#///////////<br># Voting Classifier(LR, RF,AdaBoost,SVM,GNB,Knn,GBC)<br><br>clf1 = LogisticRegression(random_state=100)<br>clf2 = RandomForestClassifier(n_estimators = 100, criterion = \'entropy\')<br>clf3 = SVC(gamma=2, C=1)<br>clf4 = GradientBoostingClassifier(random_state=0, learning_rate=0.01)<br>#clf3 = GradientBoostingClassifier(random_state=0, learning_rate=0.01)<br>clf5 = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),<br>                         algorithm=""SAMME"",<br>                         n_estimators=200)<br>clf6 = GaussianNB()<br>clf7 = KNeighborsClassifier(n_neighbors = 5, metric = \'minkowski\', p = 2)<br>#clf8 = svm<br>#clf9 = QuadraticDiscriminantAnalysis()<br># Majority Vote<br>eclf1 = VotingClassifier(estimators=[(\'lr\', clf1), (\'rf\', clf2), (\'svm\', clf3), (\'gbc\', clf4),(\'adb\',clf5),(\'gnb\',clf6),(\'knn\',clf7)], voting=\'hard\')<br>eclf1 = eclf1.fit(X, y)<br>preds= eclf1.predict(test_x)<br><br>print(preds)<br>",1
+"# preds, target = learn_classifier.get_preds(DatasetType.Test, ordered=True)
+labels = np.argmax(preds, axis =1)
+",0
+"dtrain=xgb.DMatrix(X_train,y_train)
+dvalidate=xgb.DMatrix(X_val,y_val)
+
+param={'max_depth':5,'eta':1,'ojective':'reg:linear'}
+model_xg=xgb.train(param,dtrain,200)
+pred_y=model_xg.predict(dvalidate)
+
+
+val_y_inv=np.exp(y_val)-1
+pred_y_inv=np.exp(pred_y)-1
+rmspe_val=rmspe(val_y_inv,pred_y_inv)
+print(rmspe_val)",0
+"
+train['Year'] = train.Date.dt.year
+train['Month'] = train.Date.dt.month
+train['Day'] = train.Date.dt.day
+train['DayOfWeek'] = train.Date.dt.dayofweek
+train['WeekOfYear'] = train.Date.dt.weekofyear
+
+
+test['Year'] = test.Date.dt.year
+test['Month'] = test.Date.dt.month
+test['Day'] = test.Date.dt.day
+test['DayOfWeek'] = test.Date.dt.dayofweek
+test['WeekOfYear'] = test.Date.dt.weekofyear",0
+"#Select top 150 important numerical columns with RFE
+from sklearn.feature_selection import RFE
+from sklearn.linear_model import LogisticRegression
+
+selector = RFE(LogisticRegression(), n_features_to_select=150, step=1, verbose = 2)
+selector = selector.fit(select_num_cols, Y_train)
+select_cols = selector.get_support(indices = True)
+select_cols_df = select_num_cols.iloc[:,select_cols]
+
+best_X_col_name = select_cols_df.columns
+select_cols_df.head()",0
+"from sklearn.linear_model import LogisticRegression
+
+logistic_reg = LogisticRegression(solver='liblinear', C=1, penalty='l2', max_iter=1000, random_state=42, n_jobs=-1)
+logistic_reg.fit(X_train_transformed, y_train)",0
+"dtrain = lgbm.Dataset(train_df, label=y_value)
+clf = lgbm.train(lgbm_param, train_set=dtrain, num_boost_round=5000)
+predict = clf.predict(test_df)",0
+"final_model.fit(x_train, y)",0
+"prev_year_median = pd.DataFrame({'Page': train['Page'], 'visits': prev_year_median})",0
+target = train['count'],0
+"df['A'] = y[:,0] #, 'B', 'NEITHER'",0
+"learn.fit_one_cycle(5, 1e-3, wd=0.3)",0
+"
+merge_data = pd.concat([train_data,validation_data]).reset_index(drop = True)
+merge_data = pd.concat([merge_data,train_data]).reset_index(drop = True)
+count = 0",0
+"data_path = ""../input/""<br>train_file = data_path + ""train.json""<br>test_file = data_path + ""test.json""<br>train_df = pd.read_json(train_file)<br>test_df = pd.read_json(test_file)<br><br>train_df = train_df.fillna(\'\')<br>test_df = test_df.fillna(\'\')<br><br>train_df[\'photos_num\'] = train_df.photos.apply(lambda x: len(x))<br>test_df[\'photos_num\'] = test_df.photos.apply(lambda x: len(x))<br><br>train_df[\'features_num\'] = train_df.features.apply(lambda x: len(x))<br>test_df[\'features_num\'] = test_df.features.apply(lambda x: len(x))<br><br>print(\'Shape of train dataset = \' + str(train_df.shape))<br>print(\'Shape of test dataset = \' + str(test_df.shape))",0
+"def weekend(df):
+    df['weekend'] = np.zeros_like(df['holiday'])
+    df['weekend'].loc[(df['workingday'] == 0) & (df['holiday'] == 0)] = 1",0
+"result = pd.concat([results_df, id_df], axis=1)
+",0
+"#Modelling based on important features alone
+train2 = train
+test2 = test
+train_imp = train2[['Id','Elevation','Horizontal_Distance_To_Roadways','Horizontal_Distance_To_Fire_Points',
+                    'Horizontal_Distance_To_Hydrology','Vertical_Distance_To_Hydrology','Hillshade_9am',
+                    'Aspect','Hillshade_3pm',
+                    'Wilderness_Area4','Cover_Type']]
+
+",0
+"model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
+batch_size=150
+X_train, X_valid, y_train, y_valid = train_test_split(train['file'].values, train['class_id'].values, test_size=0.1)
+model.fit_generator(image_generator(X_train, TRAIN_DIR, labels=y_train, size=SIZE, batch_size=batch_size, random_preproc=False, rotation_range=10, shear_range=5, shift_range=(0.1,0.1), zoom_range=(0.8,1.2)),
+                    epochs=25,
+                    steps_per_epoch=int(math.ceil(len(y_train)/batch_size)),
+                    validation_data=image_generator(X_valid, TRAIN_DIR, labels=y_valid, size=SIZE, batch_size=batch_size, random_preproc=False),
+                    validation_steps=int(math.ceil(len(y_valid)/batch_size)),
+                    callbacks=[EarlyStopping(monitor='val_loss',patience=3,verbose=0)],
+                    verbose=1
+                   )",0
+"train_data['MMDD'] = train_data.apply(lambda x: str(x.month) + str(x.day), axis=1)
+",0
+"test_merged=test_merged.drop(['Id','Customers'],1)",0
+"b""scores, tst_scr = validation_curve(RandomForestRegressor(), X_train[:20000],\\\n                                   y_train[:20000], 'n_estimators', params, \\\n                                   cv=5, scoring='r2', verbose=2)""",0
+"X_train = np.zeros((tot_num, IMG_HEIGHT, IMG_WIDTH), dtype=np.float32)
+Y_train = np.zeros((tot_num, IMG_HEIGHT, IMG_WIDTH), dtype=np.float32)",0
+"df['days_first_case']=np.where(df['days_first_case']<0,0,df['days_first_case'].fillna(0))
+df['days_first_fatality']=np.where(df['days_first_fatality']<0,0,df['days_first_fatality'].fillna(0))",0
+"#Extra tree classifier is a tree based model for classification problems
+et = ExtraTreeClassifier()
+et.fit(x_train_3,y_train_3)
+et.predict(x_train_3)
+et.score(x_test_3,y_test_3)",0
+"test.fillna(method='ffill', inplace=True)",0
+"from sklearn.linear_model import LinearRegression
+lmodel = LinearRegression()
+cross_val_score(lmodel, x, y, cv=5).mean()",0
+"sgd = SGDClassifier(loss = 'modified_huber',shuffle = True,random_state = 171)
+sgd.fit(x_train_3,y_train_3)
+sgd.predict(x_train_3)
+sgd.score(x_test_3,y_test_3)",0
+"for i in df_train.groupby('Hour').count().index:
+    s = 'Hour'+str(i)
+    a=[]
+    for j in df_train.Hour:
+        if j==i:
+            a.append(1)
+        else:
+            a.append(0)
+    df_train[s]=a
+df_train.sample(5)",0
+"X, y = loadData(train)",0
+"regressor.fit(X_train,y_train, eval_set = [(X_train, y_train), (X_validation, y_validation)])",0
+"train_X = sparse.hstack([train_df[features_to_use], tr_sparse]).tocsr()
+test_X = sparse.hstack([test_df[features_to_use], te_sparse]).tocsr()
+
+target_num_map = {'high':0, 'medium':1, 'low':2}
+train_y = np.array(train_df['interest_level'].apply(lambda x: target_num_map[x]))
+print(train_X.shape, test_X.shape)
+",0
+"df_store.PromoInterval = df_store.PromoInterval.apply(lambda x: dict1[x], convert_dtype=False)",0
+"reg.fit(X_train,np.log1p(y_train))",0
+"from sklearn.model_selection import GridSearchCV
+params={'max_depth':list(range(5,20))}
+base_model=DecisionTreeRegressor()
+cv_model=GridSearchCV(base_model,param_grid=params,return_train_score=True).fit(X_train,y_train)",0
+new_df['t'] = new_df['t'].apply(lambda x:x//8),0
+"test1=test.merge(store_avg_cust,on='Store',how='left')
+
+test1.shape,test.shape",0
+"def add_features(dset):
+    
+    mean_houses = pd.Series(dset['households']/dset['population'], name = 'mean_households')
+    rooms_ratio = pd.Series(dset['total_rooms']/dset['total_bedrooms'], name = 'ratio' )
+    
+    return pd.concat([mean_houses, rooms_ratio, dset], axis = 1)",0
+"df_train = pd.merge(df_train, df_opt, on=""Country"", how=""left"")
+df_test = pd.merge(df_test, df_opt, on=""Country"", how=""left"")",0
+"add_datepart(df,'Date',drop=False)",0
+"reg_F = AdaBoostRegressor(base_estimator = RandomForestRegressor(max_depth=20), n_estimators=50)
+reg_F.fit(x_train_data, y_train_data)
+final = reg_F.predict(test_data)
+saving(""Final ADA Boost Regression.csv"",final) # 0.22756",0
+"predict1 = []
+
+reg1 = LinearRegression().fit(x1_train, y1_train)
+pre_reg1 = reg1.predict(x1_test)
+
+reg1_poly = LinearRegression().fit(poly_x1_train, y1_train)
+pre_reg1_poly = reg1_poly.predict(poly_x1_test)
+
+rf1 = RandomForestRegressor(n_estimators = 200,max_depth=80,min_impurity_decrease = 0.001).fit(x1_train, y1_train)
+pre_rf1 = rf1.predict(x1_test)
+
+for i in range(pre_reg1.size):
+    if pre_reg1[i]<1:
+        pre_reg1[i] = 1 
+    if pre_reg1_poly[i]<1:
+        pre_reg1_poly[i] = 1
+    if pre_rf1[i]<1:
+        pre_rf1[i] = 1
+
+predict1.append(pre_reg1)
+predict1.append(pre_reg1_poly)
+predict1.append(pre_rf1)
+
+x1_final = x1_test.copy()
+x1_final['Output'] = y1_test
+x1_final['Lin_reg'] = pre_reg1
+x1_final['Lin_reg_poly'] = pre_reg1_poly
+x1_final['RF_reg'] = pre_rf1
+x1_final['Resid'] = y1_test-pre_reg1
+x1_final['Resid_poly'] = y1_test-pre_reg1_poly
+
+for prediction in predict1:
+    print(np.sqrt(mean_squared_log_error( y1_test, prediction )))",0
+"df_total_sales_customers = pd.DataFrame({'Sales':  total_sales_customers['Sales'],
+                                         'Customers': total_sales_customers['Customers']}, 
+                                         index = total_sales_customers.index)
+
+df_total_sales_customers = df_total_sales_customers.reset_index()
+df_total_sales_customers.head()",0
+"df_train[""year""] = df_train[""datetime""].dt.year
+df_train[""month""] = df_train[""datetime""].dt.month
+df_train[""day""] = df_train[""datetime""].dt.day
+df_train[""hour""] = df_train[""datetime""].dt.hour
+df_train[""minute""] = df_train[""datetime""].dt.minute
+df_train[""second""] = df_train[""datetime""].dt.second
+
+df_test[""year""] = df_test[""datetime""].dt.year
+df_test[""month""] = df_test[""datetime""].dt.month
+df_test[""day""] = df_test[""datetime""].dt.day
+df_test[""hour""] = df_test[""datetime""].dt.hour
+df_test[""minute""] = df_test[""datetime""].dt.minute
+df_test[""second""] = df_test[""datetime""].dt.second
+
+df_train.shape
+
+# datetime    ,,,,,  .
+#  column 18    .",0
+"y1_Train = df_train.iloc[:, -2]
+y1_Train.head()",0
+"X[""coord""] = X[""latitude""].map(str) + ', ' + X[""longitude""].map(str)",0
+"ddata = ddata.interpolate()
+ddata = ddata.replace([np.inf], np.float64.max)
+ddata = ddata.replace([-np.inf], np.float64.min)
+
+features = ddata.loc[:, ddata.columns.values[:len(ddata.columns.values)-1]].values
+labels = ddata.loc[:, ['TARGET_5Yrs']].values
+
+st_features = preprocessing.StandardScaler().fit_transform(features)
+
+sdata = sdata.interpolate()
+sdata = sdata.replace([np.inf], np.float64.max)
+sdata = sdata.replace([-np.inf], np.float64.min)
+
+sfeatures = sdata.loc[:, sdata.columns.values].values
+
+st_sfeatures = preprocessing.StandardScaler().fit_transform(sfeatures)",1
+"scaler = MinMaxScaler()
+train_x_new = scaler.fit_transform(train_x_new)
+train_y_new = np.log1p(train_y_new)",0
+"train_gen = flow_from_dataframe(core_idg, train_df, 
+                             path_col = 'path',
+                            y_col = 'labels', 
+                            target_size = IMG_SIZE,
+                            batch_size = 32)
+
+valid_gen = flow_from_dataframe(core_idg, valid_df, 
+                             path_col = 'path',
+                            y_col = 'labels', 
+                            target_size = IMG_SIZE,
+                            batch_size = 256) # we can use much larger batches for evaluation
+# used a fixed dataset for evaluating the algorithm
+test_X, test_Y = next(flow_from_dataframe(core_idg, 
+                               valid_df, 
+                             path_col = 'path',
+                            y_col = 'labels', 
+                            target_size = IMG_SIZE,
+                            batch_size = 1024)) # one big batch",0
+"from sklearn.ensemble import GradientBoostingRegressor
+gbr=GradientBoostingRegressor(n_estimators=4000,alpha=0.01)
+y_train_log=np.log1p(y_train)
+gbr.fit(train,y_train_log)
+pred=gbr.predict(train)
+print(""RMSLE Value For Gradient Boost: "", rmsle(y_train_log,pred,True))",0
+"# concat Country/Region and Province/State
+def func(x):
+    try:
+        x_new = x['Country_Region'] + ""/"" + x['Province_State']
+    except:
+        x_new = x['Country_Region']
+    return x_new
+        
+df_traintest['place_id'] = df_traintest.apply(lambda x: func(x), axis=1)
+df_traintest.head()'",0
+"month_counts = train_data.groupby(['day', 'hour']).agg({target: 'count'})
+month_counts = month_counts.sort_values(target, ascending=False)
+",0
+"dt.fit(train[feats], train['rentals'])",0
+"X = train.drop(""interest_level"", 1)
+Y = train[""interest_level""].astype(""category"")",0
+learn.lr_find(),0
+"from sklearn.linear_model import LinearRegression,Ridge,Lasso
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.metrics import mean_squared_error as mse
+from sklearn import metrics
+
+# Initialize logistic regression model
+lr = LinearRegression()
+
+# Train the model
+lr.fit(X_train,y = y_train)
+
+# Make predictions
+y_pred = lr.predict(X_test)
+
+y_pred_train = lr.predict(X_train)
+
+print('RMSLE for test: ',rmsle(y_test, y_pred, True))
+print('RMSLE for train: ',rmsle(y_train, y_pred_train, True))",0
+"# use a full grid over all parameters<br>\'\'\'<br>from sklearn.grid_search import GridSearchCV, RandomizedSearchCV<br>from time import time<br>param_grid = {""max_depth"": [3, None],<br>              ""max_features"": [1, 3, 10],<br>              ""min_samples_split"": [1, 3, 10],<br>              ""min_samples_leaf"": [1, 3, 10],<br>              ""bootstrap"": [True, False]}<br><br>clf = RandomForestRegressor(n_estimators=20)<br># run grid search<br>grid_search = GridSearchCV(clf, param_grid=param_grid)<br>start = time()<br>grid_search.fit(X, y)<br><br>print(""GridSearchCV took %.2f seconds for %d candidate parameter settings.""<br>      % (time() - start, len(grid_search.grid_scores_)))<br>#report(grid_search.grid_scores_)<br>\'\'\'",1
+"def modelfit(alg, X_train, y_train,useTrainCV=True, cv_folds=5, early_stopping_rounds=50):
+    
+    if useTrainCV:
+        xgb_param = alg.get_xgb_params()
+        xgtrain = xgb.DMatrix(X_train, label=y_train)
+        cvresult = xgb.cv(xgb_param, xgtrain, num_boost_round=alg.get_params()['n_estimators'], nfold=cv_folds,
+            metrics='rmse', early_stopping_rounds=early_stopping_rounds, show_stdv=False)
+        alg.set_params(n_estimators=cvresult.shape[0])
+    
+    #Fit the algorithm on the data
+    alg.fit(X_train, y_train,eval_metric='rmse')
+        
+    #Predict training set:
+    predictions = alg.predict(X_train)
+    #predprob = alg.predict_proba(X_train)[:,1]
+        
+    #Print model report:
+    print(""\
+Model Report"")
+    #print(""Accuracy : %.4g"" % metrics.accuracy_score(y_train, predictions))
+    print(""RMSE Score (Train): %f"" % metrics.mean_squared_error(y_train, predictions))
+                    
+    feat_imp = pd.Series(alg.feature_importances_).sort_values(ascending=False)
+    feat_imp.plot(kind='bar', title='Feature Importances')
+    plt.ylabel('Feature Importance Score')'",0
+"page_median = pd.DataFrame({'Page': train['Page'], 'median': page_median})",0
+"# Save the test IDs for Kaggle submission
+test_ids = act_test['activity_id']
+
+def preprocess_acts(data,min_date, train_set=True):
+    
+    # Getting rid of data feature for now
+    dates=data['date']
+    dates=process_dates(dates,min_date)
+    data = data.drop(['date', 'activity_id'], axis=1)
+    if(train_set):
+        data = data.drop(['outcome'], axis=1)
+    
+    ## Split off _ from people_id
+    data['people_id'] = data['people_id'].apply(lambda x: x.split('_')[1])
+    data['people_id'] = pd.to_numeric(data['people_id']).astype(int)
+    
+    columns = list(data.columns)
+    
+    # Convert strings to ints
+    for col in columns[1:]:
+        data[col] = data[col].fillna('type 0')
+        data[col] = data[col].apply(lambda x: x.split(' ')[1])
+        data[col] = pd.to_numeric(data[col]).astype(int)
+#    for column in columns[1:]:
+#        dummies = pd.get_dummies(data[column])
+#        data[dummies.columns] = dummies
+    data['dates']=dates
+    return data
+
+def preprocess_people(data,min_date):
+    dates=data['date']
+    dates=process_dates(dates,min_date)
+    # TODO refactor this duplication
+    data = data.drop(['date'], axis=1)
+    data['people_id'] = data['people_id'].apply(lambda x: x.split('_')[1])
+    data['people_id'] = pd.to_numeric(data['people_id']).astype(int)
+    
+    #  Values in the people df is Booleans and Strings    
+    columns = list(data.columns)
+    bools = columns[11:]
+    strings = columns[1:11]
+    
+    for col in bools:
+        data[col] = pd.to_numeric(data[col]).astype(int)        
+    for col in strings:
+        data[col] = data[col].fillna('type 0')
+        data[col] = data[col].apply(lambda x: x.split(' ')[1])
+        data[col] = pd.to_numeric(data[col]).astype(int)
+    #data = data.drop(['group_1'], axis=1)
+#    for column in strings:
+#        dummies = pd.get_dummies(data[column])
+#        data[dummies.columns] = dummies
+    data['dates']=dates
+    return data",0
+"#firstconfirmed = df[(df['ConfirmedCases']>0) & (df['Date']<'2020-03-19')].groupby(['Province_State','Country_Region'])['Date'].min().reset_index()
+firstconfirmed = df[(df['ConfirmedCases']>0)].groupby(['Province_State','Country_Region'])['Date'].min().reset_index()",0
+"from xgboost import XGBClassifier
+
+xgb_clf = XGBClassifier(n_estimators=300, max_depth=16, learning_rate=0.1, random_state=42, n_jobs=-1)
+xgb_clf.fit(X_train_transformed, y_train)",0
+"X = np.array([i[0] for i in train]).reshape(-1,1,50,50)
+Y = [i[1] for i in train]
+
+test_x = np.array([i[0] for i in test]).reshape(-1,1,50,50)
+test_y = [i[1] for i in test]",0
+"df['presi_num']= df['president']
+df['presi_num']=df['presi_num'].replace(dict)
+df.head()",0
+"train = add_feature(train)
+test = add_feature(test)",0
+"
+feature = feature.fillna(-1)
+# feature = scaler.transform(feature)
+print(feature)
+",0
+weather.Sunrise = weather.Sunrise.apply(time_func),0
+"lm.fit_one_cycle(3, 1e-3)",0
+"scores = []
+tr_scores = []
+for train_index, test_index in skf.split(train, y):
+    train_df = train.loc[train_index,col4train].reset_index(drop = True)
+    valid_df = train.loc[test_index,col4train].reset_index(drop = True)
+    train_y, valid_y = y[train_index], y[test_index]
+    te = TargetEncodingSmoothing(
+        columns_names= col4train,
+        k = 3, f = 1.5
+    )
+    
+    X_tr = get_CV_target_encoding(train_df, train_y, te, cv = 5)
+
+    te.fit(train_df, train_y)
+    X_val = te.transform(valid_df).values
+
+    model = get_model()
+    model.fit(X_tr,train_y)
+
+    predictions = model.predict_proba(X_val)[:,1]
+    scores.append(roc_auc_score(valid_y, predictions))
+
+    train_preds = model.predict_proba(X_tr)[:,1]
+    tr_scores.append(roc_auc_score(train_y, train_preds))
+
+print(""Train AUC score: {:.4f} Valid AUC score: {:.4f}, STD: {:.4f}"".format(
+    np.mean(tr_scores), np.mean(scores), np.std(scores)
+))",0
+train = train.dropna(),0
+"del df_test[""Date""]
+del df_test[""Day""]
+del df_test[""DayOfWeek""]
+del df_test[""StateHoliday""]
+df_test = pd.concat([df_test, df_DayOfWeek, df_StateHoliday], axis=1)
+test_df = pd.merge(df_test, df_store, how='left', on=['Store'])
+test_df.fillna(0, inplace=True)'",0
+"x=XGBRegressor()
+x=dr.fit(X_train,Y_train)
+pred=x.predict(X_test)
+s=mean_absolute_error(Y_test,pred)
+s1=mean_squared_error(Y_test,pred)
+s2=r2_score(Y_test,pred)
+print(""The MAE with the XGBRegressor is: ""+str(s))
+print(""The MsE with the XGBRegressor is: ""+str(s1))
+print(""The R2_Score with the XGBRegressor is: ""+str(s2))",0
+train_df=pd.DataFrame(train_df),0
+"y=traindata['ACTION']
+x=traindata.drop('ACTION',axis=1)
+#Splitting training and testing data
+x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.70,test_size=0.30, random_state=0)",0
+"df_avg_sales_customers = pd.DataFrame({'Sales':     avg_sales_customers['Sales'],
+                                       'Customers': avg_sales_customers['Customers']}, 
+                                       index =      avg_sales_customers.index)
+
+df_avg_sales_customers = df_avg_sales_customers.reset_index()
+
+df_stores_avg = df_avg_sales_customers.join(df_store.set_index('Store'), on='Store')
+df_stores_avg.head()",0
+"group_year_month = df.groupby(['year','month'])",0
+"test_data['Open'] = test_data['Open'].fillna(1)
+test_data['CompetitionOpenSinceMonth'] = test_data['CompetitionOpenSinceMonth'].fillna(9.0)
+test_data['CompetitionDistance'] = test_data['CompetitionDistance'].fillna(train_data['CompetitionDistance'].mean())
+test_data['CompetitionOpenSinceYear'] = test_data['CompetitionOpenSinceYear'].fillna(2012.0)
+test_data['Promo2SinceWeek'] = test_data['Promo2SinceWeek'].fillna(40.0)
+test_data['Promo2SinceYear'] = test_data['Promo2SinceYear'].fillna(2012.0)
+
+test_data.isnull().sum().sort_values(ascending = False)",1
+"# process date
+df_traintest['Date'] = pd.to_datetime(df_traintest['Date'])
+df_traintest['day'] = df_traintest['Date'].apply(lambda x: x.dayofyear).astype(np.int16)
+df_traintest.head()",0
+"ross.prepare_sample_data(limit =1000 , testing_limit = 400)
+ross.Other_Regression(reg = 'Ridge')",0
+"df['Intersection']=df['Address'].apply(lambda x : 1 if '/' in x else 0)
+df['Block']=df['Address'].apply(lambda x : 1 if 'Block' in x else 0)
+df_test['Intersection']=df_test['Address'].apply(lambda x : 1 if '/' in x else 0)
+df_test['Block']=df_test['Address'].apply(lambda x : 1 if 'Block' in x else 0)",0
+"test_ext = pd.concat([test_ext[col_interval],test_ext[col_ordinal], pd.get_dummies(test_ext[col_binary])], axis=1)
+test_ext.fillna(-1, inplace = True)
+#X_ext = X_ext.drop(columns = ids_targets, axis =1)
+y_ext = pd.DataFrame(train_ext.target) #train_lc.target_default.ravel(order='K') #pd.DataFrame(train_ext.target)
+y_ext=y_ext.astype('bool')
+y_ext = y_ext.values
+y_ext = y_ext.reshape(-1)",0
+"train2 = pd.read_csv(""/kaggle/input/bike-sharing-demand/train.csv"", parse_dates=['datetime'])
+train2['year'] = train2['datetime'].dt.year
+train2['month'] = train2['datetime'].dt.month
+train2['day'] = train2['datetime'].dt.day
+train2['weekday'] = train2['datetime'].dt.weekday
+train2['hour'] = train2['datetime'].dt.hour
+
+test2 = pd.read_csv('/kaggle/input/bike-sharing-demand/test.csv', parse_dates=['datetime'])
+test2['day'] = test2['datetime'].dt.day
+
+#  ()   ,       
+# mean   . outlier , median 
+#train2.groupby('hour')['count'].mean()
+##### media          .        .
+train2.groupby('hour')['count'].median()
+'",0
+sc = StandardScaler(),0
+"import xgboost as xg
+xgr=xg.XGBRegressor(max_depth=8,min_child_weight=6,gamma=0.4)
+xgr.fit(X,Y)
+
+'''import xgboost as xg
+from sklearn.model_selection import GridSearchCV
+
+def grid_search():
+    
+    xgr=xg.XGBRegressor(max_depth=8,min_child_weight=6,gamma=0.4)
+    xgr.fit(X,Y)
+
+    #rf=RandomForestRegressor(n_estimators=100,random_state=0)
+    #rf.fit(X,Y)
+
+    #parameters=[{'max_depth':[8,9,10,11,12],'min_child_weight':[4,5,6,7,8]}]
+    #parameters=[{'gamma':[i/10.0 for i in range(0,5)]}]
+    parameters=[{'subsample':[i/10.0 for i in range(6,10)],
+ 'colsample_bytree':[i/10.0 for i in range(6,10)]}]
+
+    grid_search= GridSearchCV(estimator=xgr, param_grid=parameters, cv=10,n_jobs=-1)
+
+    print (1)
+    grid_search=grid_search.fit(X,Y)
+    print (2)
+    best_accuracy=grid_search.best_score_
+    best_parameters=grid_search.best_params_
+    print (best_accuracy)
+    print (best_parameters)
+
+#if __name__ == '__main__':
+   #grid_search()'''",1
+"learn.fit_one_cycle(5, 1e-3, wd=0.2)
+learn.recorder.plot_losses()",0
+"model_dtr=DTR(max_depth=11,random_state=1).fit(X_train,y_train)
+y_pred=model_dtr.predict(X_test)",0
+"import xgboost as xgb
+xgr=xgb.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=9,
+ min_child_weight=4, gamma=0.125, subsample=1, colsample_bytree=0.8)
+xgr.fit(train_df.drop(columns='count',axis=1),train_df['count'])
+y_predict=xgr.predict(test_df)",0
+"model = RandomForestRegressor(min_samples_leaf=2, max_depth=30, n_estimators=30)
+%time model.fit(traindf.values, ytrain)",0
+"###############  FIT entrainer tout le set d'entrainement
+rf.fit(X_train_features, y_train_target)",0
+"output = pd.DataFrame(test_data['id'])
+test_data = test_data.drop('id', axis=1)",0
+"model.fit(X_train, y_train)",0
+"# Read development embeddigns from json file - this is the output of Bert
+development = pd.read_json(""contextual_embeddings_gap_development.json"")
+X_development, Y_development = parse_json(development)
+
+validation = pd.read_json(""contextual_embeddings_gap_validation.json"")
+X_validation, Y_validation = parse_json(validation)
+
+test = pd.read_json(""contextual_embeddings_gap_test.json"")
+X_test, Y_test = parse_json(test)",0
+"train=pd.merge(train,store)
+test=pd.merge(test,store)",0
+"epoch_len = 20
+model, criteria, optimizer, scheduler = create_model(len(df_train), epoch_len)
+set_trainable(model.BERT, False)
+aaa = 0
+for t in range(epoch_len):
+    tot_loss = 0
+    correct_train = 0
+    val_loss = 0
+    val_correct = 0
+    model = model.train()
+    
+    if GPU:
+        model = model.cuda()
+    
+    for item in tqdm(train_loader):
+        
+        token = item[0]
+        at_mask = item[3]
+        offsets = item[2]
+        target = item[1]
+        if GPU:
+            token = token.cuda()
+            at_mask = at_mask.cuda()
+            target = target.cuda()
+            offsets = offsets.cuda()
+            
+        output = model(token, at_mask, offsets, -2)
+        loss = criteria(output, target)
+        tot_loss += loss.item()
+        correct_train += torch.sum(torch.max(torch.nn.functional.softmax(output, dim = 1), dim = 1)[1] == target)
+        
+        optimizer.zero_grad()
+        loss.backward()
+        nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+        optimizer.step()
+        scheduler.step()
+    
+    with torch.no_grad():
+        model = model.eval()
+        
+        if GPU:
+            model = model.cuda()            
+        for item in tqdm(val_loader):
+            token = item[0]
+            at_mask = item[3]
+            offsets = item[2]
+            target = item[1]
+            
+            if GPU:
+                token = token.cuda()
+                at_mask = at_mask.cuda()
+                offsets = offsets.cuda()
+                target = target.cuda()
+                
+            output = model(token, at_mask, offsets, -2)
+            val_correct += torch.sum(torch.max(torch.nn.functional.softmax(output, dim = 1), dim = 1)[1] == target)
+        if val_correct > aaa:
+            bst_model = model
+            aaa = val_correct
+    print(tot_loss, correct_train,""   "", val_correct,"" out of "", len(val_loader)*30)",0
+"ensemble_1 = RandomForestClassifier()
+ensemble_1.fit(x_train_imp,y_train_imp)
+ensemble_predict= ensemble_1.predict(x_test_imp)
+print (ensemble_predict)
+ensemble_1.score(x_test_imp,y_test_imp)",0
+"df_cv_results=pd.DataFrame(cv_model.cv_results_).sort_values(by='mean_test_score',ascending=False)",0
+"# Impute missing value in categorical columns with mode
+not_numeric_cols = df.select_dtypes(exclude=['number']).columns.values
+
+for col in not_numeric_cols:
+    if col in list(col_pct_miss_df.column_name):
+        mode = df[col].mode()[0]
+        df[col] = df[col].fillna(mode)",1
+"#lets do the  decision tree regresssion  
+
+#Encoding
+#3 cat_cols,1date_col,rest are numerical
+data_merged.dtypes
+
+data_merged['day']=data_merged['Date'].dt.day
+data_merged['month']=data_merged['Date'].dt.month
+data_merged['year']=data_merged['Date'].dt.year
+
+# will give the day of week extracion
+# data_merged['dayofweek']=data_merged['Date'].dt.strftime('%A')",0
+"from sklearn.preprocessing import MinMaxScaler
+
+def normalize_cols(df: DataFrame, scaler) -> DataFrame:
+    df = df.copy()
+    return DataFrame(scaler.fit_transform(df.values), columns=df.columns, index=df.index)
+
+x_scaler = MinMaxScaler()
+x = train_data.drop(TARGET_NAME, axis=1)
+x = normalize_cols(df=x, scaler=x_scaler)
+
+y_scaler = MinMaxScaler()
+y = train_data[[TARGET_NAME]]
+y = normalize_cols(df=y, scaler=y_scaler)
+
+test_data =  normalize_cols(df=test_data, scaler=x_scaler)",0
+"from sklearn.ensemble import RandomForestRegressor
+
+rf = RandomForestRegressor(n_estimators=100)
+rf.fit(train,y_train)
+preds = rf.predict(test)",0
+df_train1['Hillshade_Noon'] = np.square(df_train1['Hillshade_Noon']),0
+"# date_account_created
+dac = np.vstack(
+    df_all.date_account_created.astype(str).apply(
+        lambda x: list(map(int, x.split('-')))
+        ).values
+    )
+df_all['dac_year'] = dac[:,0]
+df_all['dac_month'] = dac[:,1]
+df_all['dac_day'] = dac[:,2]
+df_all = df_all.drop(['date_account_created'], axis=1)",0
+"decisionTreeModel = DecisionTreeClassifier(criterion= 'entropy',
+                                           max_depth = None, 
+                                           splitter='best', 
+                                           random_state=10)
+
+decisionTreeModel.fit(X_train,y_train)",0
+"train.fillna(method='ffill',inplace=True)",0
+"# mean normalize train and test images
+train_x = train_x/255
+test_x = test_x/255",0
+"df = pd.DataFrame({'PhraseId':a,'Sentiment':ans})",0
+"# Loop through each store, 
+# train the model using the data of current store, and predict it's sales values.
+
+rossmann_dic = dict(list(rossmann_df.groupby('Store')))
+test_dic     = dict(list(test_df.groupby('Store')))
+submission   = Series()
+scores       = []
+
+for i in test_dic:
+    
+    # current store
+    store = rossmann_dic[i]
+    
+    # define training and testing sets
+    X_train = store.drop([""Sales"",""Store""],axis=1)
+    Y_train = store[""Sales""]
+    X_test  = test_dic[i].copy()
+    
+    store_ids = X_test[""Id""]
+    X_test.drop([""Id"",""Store""], axis=1,inplace=True)
+    
+    # Linear Regression
+    lreg = LinearRegression()
+    lreg.fit(X_train, Y_train)
+    Y_pred = lreg.predict(X_test)
+    scores.append(lreg.score(X_train, Y_train))
+
+    # Xgboost
+    # params = {""objective"": ""reg:linear"",  ""max_depth"": 10}
+    # T_train_xgb = xgb.DMatrix(X_train, Y_train)
+    # X_test_xgb  = xgb.DMatrix(X_test)
+    # gbm = xgb.train(params, T_train_xgb, 100)
+    # Y_pred = gbm.predict(X_test_xgb)
+    
+    # append predicted values of current store to submission
+    submission = submission.append(Series(Y_pred, index=store_ids))
+
+# append rows(store,date) that were closed, and assign their sales value to 0
+submission = submission.append(Series(0, index=closed_store_ids))
+
+# save to csv file
+submission = pd.DataFrame({ ""Id"": submission.index, ""Sales"": submission.values})
+submission.to_csv('rossmann.csv', index=False)'",0
+"print(""Test dataset before pre-processing:\
+"")
+print(test_dataset.head())
+
+test_dataset = test_dataset.fillna('Enpyty_value')
+
+print(""\
+\
+\
+Test dataset after pre-processing:\
+"")
+print(test_dataset.head())'",0
+"sampledf = pd.read_csv('/kaggle/input/restaurant-revenue-prediction/sampleSubmission.csv')
+",0
+"valid_pred_male = valid_male[[""A"",""B"",""NEITHER""]]
+log_loss(valid_gold_male,valid_pred_male)",0
+"test_numeric_X = test[numeric_features_X]
+test_numeric_X.isnull().sum()",0
+"#current public score is 0.66,this should be improved
+#checking the variance of each feature
+train1 = train
+test1 = test
+sel = VarianceThreshold(threshold=(.8 * (1 - .8)))
+sel.fit_transform(train1)
+
+train1.head(40)
+
+#this is based on this article ,https://scikit-learn.org/stable/modules/feature_selection.html
+#could see no rows being removed in the data set,as all of them have valid values,non null.
+",0
+"train_X = sparse.hstack([train_df[features_to_use], tr_sparse]).tocsr()",0
+"
+
+from sklearn import model_selection
+from sklearn import linear_model
+
+
+X = data.drop(['Id', 'revenue'], axis=1)
+Y = data.revenue
+
+",0
+"def fit_model(clf, X_train, y_train):
+    return clf.fit(X_train, y_train)
+",0
+"MAX_WEIGHT = 50.0
+
+toys = {
+    ""horse"":  { ""sample"": lambda: max(0, np.random.normal(5,2,1)[0]), ""sample_type"": ""normal(5,2)"" },
+    ""ball"":   { ""sample"": lambda: max(0, 1 + np.random.normal(1,0.3,1)[0]), ""sample_type"": ""normal(1,0.3)"" },
+    ""bike"":   { ""sample"": lambda: max(0, np.random.normal(20,10,1)[0]), ""sample_type"": ""normal(20,10)"" },
+    ""train"":  { ""sample"": lambda: max(0, np.random.normal(10,5,1)[0]), ""sample_type"": ""normal(10,5)"" },
+    ""coal"":   { ""sample"": lambda: 47 * np.random.beta(0.5,0.5,1)[0], ""sample_type"": ""47*beta(0.5,0.5)"" },
+    ""book"":   { ""sample"": lambda: np.random.chisquare(2,1)[0], ""sample_type"": ""chi(2)"" },
+    ""doll"":   { ""sample"": lambda: np.random.gamma(5,1,1)[0], ""sample_type"": ""gamma(5,1)"" },
+    ""block"":  { ""sample"": lambda: np.random.triangular(5,10,20,1)[0], ""sample_type"": ""triagl(5,10,20)"" },
+    ""gloves"": { ""sample"": lambda: 3.0 + np.random.rand(1)[0] if np.random.rand(1) < 0.3 else np.random.rand(1)[0], ""sample_type"": ""0.3:3+rand(1), 0.7:rand(1)"" },
+}
+toy_names = list(toys)
+
+gifts_df = pd.read_csv(""../input/gifts.csv"", sep="","")
+gifts = gifts_df[""GiftId""].values
+print(""{} gifts"".format(len(gifts)))
+
+for t in toys:
+    # get ranges
+    samples = [toys[t][""sample""]() for _ in range(1000)]
+    toys[t][""max""] = max(samples)
+    toys[t][""min""] = min(samples)
+    
+    # get gift counts
+    ids = [g for g in gifts if t in g.split(""_"")[0]]
+    toys[t][""ids""] = ids
+    toys[t][""count""] = len(ids)
+    
+    # print toy type stats
+    print(""{:4}\\tdist: {:26}\\trange:{:5.2f} - {:5.2f}\\tcount:{:6,}"".format(t, toys[t][""sample_type""], toys[t][""min""], toys[t][""max""], toys[t][""count""]))'",0
+"learn.lr_find(end_lr=100, wd=0.3)
+learn.recorder.plot()",0
+"test_merged['Date']=pd.to_datetime(test_merged['Date'],format='%Y-%m-%d')
+test_merged['day']=test_merged['Date'].dt.day
+test_merged['month']=test_merged['Date'].dt.month
+test_merged['year']=test_merged['Date'].dt.year
+",0
+"knn.fit(Xadult, Yadult)",0
+"def remove_outliers_for_variable_by_quantiles(data, col, q1=.25, q2=.75):
+  df = data.copy()
+  median = df[col].median()
+  q25, q75 = df[col].quantile([q1,q2])
+  iqr = q75-q25
+  upper_wh = q75 +1.5*iqr
+  lower_wh = q25 - 1.5*iqr
+  whiskers = int(np.floor(lower_wh)), int(np.ceil(upper_wh))
+  df.drop(df[~df[col].between(whiskers[0], whiskers[1]) & (~np.isnan(df[col]))].index, inplace=True)
+  return df",0
+"df_store['CompetitionDistance'].fillna(df_store['CompetitionDistance'].median(), inplace = True)",1
+"keys['date'] = keys['Page'].apply(lambda x: x.split('_')[-1])
+keys['Page'] = keys['Page'].apply(lambda x: '_'.join(x.split('_')[:-1]))
+keys['date'] = pd.to_datetime(keys['date'], format='%Y-%m-%d')",0
+"from sklearn.linear_model import ElasticNetCV, ElasticNet
+
+# Use ElasticNetCV to tune alpha automatically instead of redundantly using ElasticNet and GridSearchCV
+el_model = ElasticNetCV(l1_ratio=[.1, .5, .7, .9, .95, .99, 1], eps=5e-2, cv=10, n_jobs=-1)         
+el_model.fit(X_train, y_train)
+print(f'Optimal alpha: {el_model.alpha_:.6f}')
+print(f'Optimal l1_ratio: {el_model.l1_ratio_:.3f}')
+print(f'Number of iterations {el_model.n_iter_}')",0
+"X1_train = np.concatenate((X_train, np.reshape(customers_train, (customers_train.shape[0], 1))), axis=1)
+",0
+"# Spliting the datasets
+features = pd.concat([scaled_feat, train_set[cate_vars]], axis=1)
+features.head()",0
+"df[""count""] = df[""count""].map(np.log1p)",0
+"# Calculate percent of missing in each column
+col_pct_miss = []
+for col in df.columns:
+    percent_miss = np.mean(df[col].isnull())*100
+    if percent_miss > 0:
+        col_pct_miss.append([col, percent_miss])
+    
+col_pct_miss_df = pd.DataFrame(col_pct_miss, columns = ['column_name','% of Missing']).sort_values(by = '% of Missing', ascending = False)
+col_pct_miss_df",0
+"df_traintest7 = pd.merge(df_traintest6, 
+                         df_country.drop(['tests', 'testpop', 'country'], axis=1), 
+                         on=['Country_Region',], how='left')
+print(df_traintest7.shape)
+df_traintest7.head()",0
+"xx = df.groupby(['Promo', 'Month'])['Sales'].sum()
+xx",0
+"test = gatest.merge(phone[['device_id','brand','model']], how='left',on='device_id')
+test.head(3)",0
+"#Decision Tree with Pruning with 10 Folds
+cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
+dtm = DecisionTreeRegressor(random_state=42)
+param_grid = {""criterion"": [""mse"", ""mae""],
+              ""max_depth"": [2, 6, 8],
+              }
+search = GridSearchCV(dtm,param_grid, scoring='neg_mean_squared_error', cv=cv)
+
+results = search.fit(X, Y)
+# summarize
+print('MSE (NEGATIVE): %.3f' % results.best_score_)
+print('Config: %s' % results.best_params_)'",1
+df_train['Hillshade_9am'] = np.square(df_train1['Hillshade_9am']),0
+"#np.any(np.isnan(train_users['id']))
+#print(np.all(np.isfinite(col)))
+
+#np.isnan(train_users.any())
+#np.isfinite(train_users.any())
+
+#np.isnan(test_users.any())
+#np.isfinite(test_users.any())
+
+
+
+
+#train_users.head()
+
+
+X_train = train_users_imputed.drop(['signup_app', 'affiliate_provider', 'affiliate_channel', 'levenshtein_distance_from_en', 'month_year_first_active', 'month_year_created', 'year_first_active', 'timestamp_first_active_year', 'country_destination', 'id', 'first_browser', 'age', 'language'], axis=1)
+y_train = train_users_imputed['country_destination']
+X_test = test_users_imputed.drop(['signup_app', 'affiliate_provider', 'affiliate_channel', 'levenshtein_distance_from_en', 'month_year_first_active', 'month_year_created', 'year_first_active', 'timestamp_first_active_year', 'id', 'age', 'first_browser', 'language'], axis = 1)
+",0
+"df_train_store[""is_holiday_state""] = df_train_store['StateHoliday'].map({""0"": 0, ""a"": 1, ""b"": 1, ""c"": 1})'",0
+"# fill na with world smoking rate
+SmokingRate = df_smoking_recent['SmokingRate'][df_smoking_recent['Entity']=='World'].values[0]
+print(""Smoking rate of the world: {:.6f}"".format(SmokingRate))
+df_traintest4['SmokingRate'][pd.isna(df_traintest4['SmokingRate'])] = SmokingRate
+df_traintest4.head()'",0
+"import math
+data['count'] = data['count'].transform(lambda x: math.log(x))",0
+"def get_Promo2Active(df):
+    months_map = {v:i+1 for i, v in enumerate([""Jan"", ""Feb"", ""Mar"", ""Apr"", ""May"", ""Jun"", 
+                                               ""Jul"", ""Aug"", ""Sept"", ""Oct"", ""Nov"", ""Dec""])}
+    def is_Promo2_active(row):
+        if row.Promo2 == 0:
+            return 0
+        
+        current_week, current_month, current_year = row.Date.week, row.Date.month, row.Date.year
+        start_week, start_year = row.Promo2SinceWeek, row.Promo2SinceYear
+        active_months = set([months_map[m] for m in row.PromoInterval.split("","")])
+        has_started = (current_year == start_year and current_week >= start_week) or current_year > start_year
+        return int(has_started and current_month in active_months)
+                        
+    return df.apply(is_Promo2_active, axis=1)",0
+"submission['Fatalities'] = [0 if submission.loc[i, 'Fatalities'] < 0 
+                                else submission.loc[i, 'Fatalities'] for i in submission.index]",0
+"from sklearn.feature_extraction.text import TfidfVectorizer
+
+tfidf = TfidfVectorizer(sublinear_tf=True, min_df=5, norm='l2', encoding='latin-1', ngram_range=(1, 2), stop_words='english')
+
+features = tfidf.fit_transform(df.Text).toarray() # Remaps the words in the 1490 articles in the text column of 
+                                                  # data frame into features (superset of words) with an importance assigned 
+                                                  # based on each words frequency in the document and across documents
+
+labels = df.category_id                           # represents the category of each of the 1490 articles
+",1
+"from sklearn.ensemble import RandomForestClassifier
+rfc = RandomForestClassifier(max_depth=20, n_estimators=100)
+rfc.fit(dtrain , train_label)
+pred = rfc.predict(dtest)
+print(accuracy_score(test_label, pred))",0
+"model = xgb.train(params, dtrain, num_boost_round=25)",0
+"for p in ['CompetitionDistance', 'CompetitionOpenSinceMonth', 'CompetitionOpenSinceYear']:
+    df_store.loc[:, p] = (df_store[p] - df_store[p].mean()) / df_store[p].std()",1
+"# Normalize
+for i in range(x_train.shape[1]):
+    x_test[:, i] = (x_test[:, i] - np.mean(x_train[:, i]))/np.std(x_train[:, i])
+    x_train[:, i] = (x_train[:, i] - np.mean(x_train[:, i]))/np.std(x_train[:, i])",1
+"train_data['rooms'] = train_data['bedrooms'] + train_data['bathrooms']
+train_data['living_rooms'] = train_data['bedrooms'] - train_data['bathrooms']
+train_data['even_rooms'] = train_data['rooms'].apply(lambda x : (x%2) == 0)
+",0
+"to = TabularPandas(df, procs, cat_names=cat_vars, cont_names=cont_vars, y_names=dep_vars, y_block=RegressionBlock(), splits=splits)",0
+"data.fillna(0, inplace=True)
+
+test.fillna(1, inplace=True)",0
+"data.datetime = data.datetime.apply(pd.to_datetime)
+data['month'] = data.datetime.apply(lambda x : x.month)
+data['hour'] = data.datetime.apply(lambda x : x.hour)
+data.head()",0
+"lgb_model = lgbm.LGBMRegressor(learning_rate=lgb_regressor.best_params_[""learning_rate""], boosting='gbdt', 
+                               metric='l1', feature_fraction=lgb_regressor.best_params_[""feature_fraction""], 
+                               num_leaves=20, min_data=10, max_depth=10, 
+                               n_estimators=lgb_regressor.best_params_[""n_estimators""], n_jobs=-1)
+lgb_model.fit(X_train, y_train)
+y_train_pred = lgb_model.predict(X_train)
+y_pred = lgb_model.predict(X_test)
+print('Train r2 score: ', r2_score(y_train_pred, y_train))
+print('Test r2 score: ', r2_score(y_test, y_pred))
+train_rmse = np.sqrt(mean_squared_error(y_train_pred, y_train))
+test_rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+print(f'Train RMSE: {train_rmse:.4f}')
+print(f'Test RMSE: {test_rmse:.4f}')'",0
+"neigh = KNeighborsClassifier(n_neighbors=1)
+neigh.fit(x_train, y_train)
+y_pred = neigh.predict(x_test)
+print(""RMSLE: "" + str(rmsle(y_pred, y_test)))",0
+"# Treinar o modelo
+rf.fit(train[feats], train['count'])",0
+"data_stores_average = data_average_sales_customers.join(data_store.set_index('Store'), on='Store')",0
+"reg7 = ExtraTreesRegressor()
+reg7.fit(x_train_data, y_train_data)
+ET_y = reg7.predict(test_data)
+saving(""ExtraTreesRegressor.csv"", ET_y) # scores = 0.24383
+",0
+"df['speech length']=df['text'].str.len()
+df.head()",0
+"#   ""b""       <br><br>df.groupby(\'StoreType\')[\'Sales\'].mean()",0
+"df_full.groupby('StoreType')['Customers', 'Sales'].sum()",0
+"las = Lasso()
+param_grid = dict(alpha=np.divide(list(range(1,100)),100))
+grid_obj = GridSearchCV(las, param_grid, scoring=scorer, cv=5)
+grid_obj.fit(x_train, y_train)
+grid_obj.best_params_",0
+"history = model.fit(train_df.values, y_value.values, nb_epoch=30, batch_size = 64, verbose=1)
+predict = model.predict(test_df.values)",0
+"results = pd.DataFrame({'id': pd.Series(test_df.id.values[:pred_test.shape[0]]),
+                        'label': pd.Series(pred_test.T[0])})
+results.to_csv('submission.csv', index=False)
+results.head(10)",0
+"test_df_pop=pd.merge(test_df, country_lookup, how='left', left_on='Country_Region', right_on='Country (or dependency)')",0
+"RF_model = RandomForestClassifier(n_estimators=50, n_jobs=4, max_depth=5)
+RF_model.fit(train_numeric_X, train_numeric_Y)
+predicted = RF_model.predict(test_numeric_X)",0
+"arr_tmp = []
+for i in data_test['Store']:
+      arr_tmp.append(float(data_store['CompetitionDistance'][data_store['Store'] == i]))
+data_test['CompetitionDistance'] = arr_tmp",0
+"from sklearn.model_selection import GridSearchCV, train_test_split
+
+
+x_train2,x_test2,y_train2,y_test2=train_test_split(X_train,y_train,test_size=0.25,random_state=42)
+
+params={'n_estimators': [10,50,100,300,500],
+       'n_jobs':[-1],
+       'max_features':['auto','sqrt','log2'],
+       'random_state':[42]}
+
+rfr_tuned=GridSearchCV(estimator=RandomForestRegressor(),param_grid=params,scoring='neg_mean_squared_log_error',verbose=True)
+
+rfr_tuned.fit(x_train2,y_train2)
+print(rfr_tuned.best_params_)
+print(rfr_tuned.best_estimator_)
+
+",0
+"from sklearn.semi_supervised import LabelPropagation
+lb = LabelPropagation()
+lb.fit(x_train_3,y_train_3)
+lb.predict(x_train_3)
+lb.score(x_test_3,y_test_3)",0
+"df_store = pd.merge(df, store, how = 'left', on = 'Store')
+df_store.head()",0
+"# Using catboost on all the data for predictions
+
+best_params = {'bagging_temperature': 0.6,
+               'border_count': 200,
+               'depth': 8,
+               'iterations': int(np.median(best_iteration) * 1.3),
+               'l2_leaf_reg': 30,
+               'learning_rate': 0.30,
+               'random_strength': 0.01,
+               'scale_pos_weight': 0.48}
+
+catb = CatBoostClassifier(**best_params,
+                          loss_function='Logloss',
+                          eval_metric = 'AUC',
+                          nan_mode='Min',
+                          thread_count=2,
+                          verbose = False)
+
+train = Pool(data=X, 
+             label=y,            
+             feature_names=list(X_train.columns),
+             cat_features=categorical_variables)
+
+catb.fit(train,
+         verbose_eval=100,
+         #task_type = ""GPU"",
+         plot=False)
+
+submission = pd.DataFrame(Xt.id)
+Xt_pool = Pool(data=Xt[list(X_train.columns)],
+               feature_names=list(X_train.columns),
+               cat_features=categorical_variables)
+submission['Action'] = catb.predict_proba(Xt_pool)[:,1]
+submission.to_csv(""catboost_submission.csv"", index=False)
+
+cat_boost_submission = submission.copy()'",0
+"predict = pd.concat([predict,test_predict], axis=1)",0
+"from sklearn.ensemble import GradientBoostingRegressor
+max_depths = [1,2,3,4,5,6,7,8,9,10]
+train_results = []
+test_results = []
+for max_depth in max_depths:
+   model = GradientBoostingRegressor(max_depth=max_depth)
+   model.fit(x_train, y_train)
+   from sklearn.metrics import mean_squared_error, r2_score
+   model_score = model.score(x_train,y_train)
+# Have a look at R sq to give an idea of the fit ,
+# Explained variance score: 1 is perfect prediction
+   y_predicted_train=model.predict(x_train)
+   train_results.append(mean_squared_error(y_train, y_predicted_train))
+   print('R2 sq: ',model_score)",0
+"newData[""avg_rooms""] = newData.total_rooms/newData.households
+newData[""avg_bedrooms""] = newData.total_bedrooms/newData.households
+newData[""avg_inhabitants""] = newData.population/newData.households",0
+result=pd.DataFrame(),0
+train = train.append(teste),0
+"grid2.fit(xTrain,yTrain)
+print(grid2.best_estimator_)
+print(grid2.best_score_)",0
+"
+Y = pd.DataFrame(model.predict_proba(feature).tolist(), columns=[""A"",""B"", ""NEITHER""])
+r = final_test[[""ID""]]
+submission = pd.concat([r,Y], axis = 1)",0
+"numAdultTest_1=test_adult.fillna(method='pad')
+numAdultTest_2=numAdultTest_1.fillna(method='pad')
+adultTest = numAdultTest_2.apply(preprocessing.LabelEncoder().fit_transform)
+adultTest",0
+"b""# windspeed\n\nfrom sklearn.ensemble import RandomForestRegressor\n\n# Windspeed0\nwindspeed_0 = train[train.windspeed == 0]\n# Windspeed0\nwindspeed_Not0 = train[train.windspeed != 0]\n\n# Windspeed0\nwindspeed_0_df = windspeed_0.drop(['windspeed','casual','registered','count','datetime'],axis=1)\n\n# Windspeed0\nwindspeed_Not0_df = windspeed_Not0.drop(['windspeed','casual','registered','count','datetime'],axis=1)\nwindspeed_Not0_series = windspeed_Not0['windspeed'] \n\n# 0\nrf = RandomForestRegressor()\nrf.fit(windspeed_Not0_df,windspeed_Not0_series)\n\n# Windspeed0Windspeed\npredicted_windspeed_0 = rf.predict(windspeed_0_df)\n\n# \nwindspeed_0['windspeed'] = predicted_windspeed_0""",0
+"from catboost import CatBoostClassifier
+
+catboost_clf = CatBoostClassifier(loss_function='Logloss', iterations=500, depth=6, l2_leaf_reg=1, 
+                                  cat_features=list(range(X_cb_train_transformed.shape[1])), 
+                                  eval_metric='AUC', random_state=42, verbose=0)
+catboost_clf.fit(X_cb_train_transformed, y_train)",0
+"@info
+def log_transf(df):
+    # log transformation function to remove skeew
+    df.Sales     = np.log1p(df.Sales)
+    df.Customers = np.log1p(df.Customers)
+    return df
+
+@info
+def remove_outliers(df,column='Sales'):
+    # interquntile approach to remove outliers
+    q1  = df[column].quantile(0.2)
+    q3  = df[column].quantile(0.8)
+    iqr = q3-q1
+    iqr_lower = q1 - 1.5*iqr
+    iqr_upper = q3 + 1.5*iqr
+    
+    df = df.loc[(df[column] > iqr_lower) & (df[column]< iqr_upper),:]
+    return df",0
+"def mlen(row):
+    s=row['lemma'].split(' ')
+    return len(s)
+
+train_df['len']=train_df.apply(mlen,axis=1)
+train_df.head()",0
+"X_train_scaled=StandardScaler().fit_transform(X=X_train)
+X_test_scaled=StandardScaler().fit_transform(X=X_test)",0
+"def encode_label(df, col, freq_limit=0):
+    df[col][pd.isna(df[col])] = 'nan'
+    tmp = df[col].value_counts()
+    cols = tmp.index.values
+    freq = tmp.values
+    num_cols = (freq>=freq_limit).sum()
+    print(""col: {}, num_cat: {}, num_reduced: {}"".format(col, len(cols), num_cols))
+
+    col_new = '{}_le'.format(col)
+    df_new = pd.DataFrame(np.ones(len(df), np.int16)*(num_cols-1), columns=[col_new])
+    for i, item in enumerate(cols[:num_cols]):
+        df_new[col_new][df[col]==item] = i
+
+    return df_new
+
+def get_df_le(df, col_index, col_cat):
+    df_new = df[[col_index]]
+    for col in col_cat:
+        df_tmp = encode_label(df, col)
+        df_new = pd.concat([df_new, df_tmp], axis=1)
+    return df_new
+
+df_traintest7['id'] = np.arange(len(df_traintest7))
+df_le = get_df_le(df_traintest7, 'id', ['Country_Region', 'Province_State'])
+df_traintest8 = pd.merge(df_traintest7, df_le, on='id', how='left')'",0
+"print(""For Random Forest Model: "")
+print(""\\t Best Parametres for registered are: "",end='')
+print(rf_reg.best_params_)
+print(""\\t Best Parametres for casual are: "",end = '')
+print(rf_cas.best_params_)'",0
+"# fit model no training data
+xgbc = xgb.XGBClassifier(seed= 42)
+xgbc.fit(train_merge, labels)
+# feature importance
+#print(xgb.feature_importances_)
+
+# plot feature importance
+fig, ax = pyplot.subplots(figsize=(10, 15))
+xgb.plot_importance(xgbc, ax=ax)
+#pyplot.show()",0
+"learn.fit(0.01,4)",0
+"tfidf = TfidfVectorizer(<br>\tmin_df=1, max_features=1600, strip_accents='unicode',lowercase =True,<br>\tanalyzer='word', token_pattern=r'\\w+', ngram_range=(1, 3), use_idf=True, <br>\tsmooth_idf=True, sublinear_tf=True, stop_words = 'english')<br>X_train = tfidf.fit_transform(train['Text']).toarray()<br>print(X_train)<br>X_test = tfidf.fit_transform(test['Text']).toarray()<br><br>def encoding(df,col):<br>    le = LabelEncoder()<br>    for i in col:<br>        df[i] = le.fit_transform(df[i])<br>train.columns<br>col = ['Gene', 'Variation', 'Class']<br>encoding(train,col)<br>encoding(test,['Gene', 'Variation'])<br><br>X_train = pd.DataFrame(X_train)<br>X_train = X_train.join(train[['Gene', 'Variation', 'Text_no_word','Text_no_char']]) <br>X_test = pd.DataFrame(X_test)<br>X_test = X_test.join(test[['Gene', 'Variation', 'Text_no_word','Text_no_char']])",0
+"# Select top 5 important categorical columns with filter method
+
+from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import LabelEncoder
+
+X_train_cat = X_train.select_dtypes(exclude = 'number').copy()
+
+# Create encoder
+le = LabelEncoder()
+X_train_cat = X_train_cat.apply(lambda col: le.fit_transform(col.astype(str)), axis=0, result_type='expand')
+
+# Prepare input data 
+oe = OrdinalEncoder()
+oe.fit(X_train_cat)
+X_train_cat_enc = oe.transform(X_train_cat)
+
+selector = SelectKBest(score_func = f_classif , k=5)
+selector.fit(X_train_cat_enc,Y_train)
+
+select_cols = selector.get_support(indices = True)
+select_cat_cols = X_train_cat.iloc[:,select_cols]
+
+select_cat_col_name = select_cat_cols.columns
+select_cat_cols.head()",0
+"def predict_scores(reg_alg):
+    r2 = make_scorer(r2_score)
+    m = reg_alg()
+    m.fit(X_train, y_train['ConfirmedCases'])
+    y_pred = m.predict(X_test)
+    m_r = cross_val_score(m, X_train, y_train['ConfirmedCases'], cv=cv, scoring = r2)
+    sc_Cases.append(m_r)
+    
+    m.fit(X_train, y_train['Fatalities'])
+    y_pred = m.predict(X_test)
+    m_r2 = cross_val_score(m, X_train, y_train['Fatalities'], cv=cv, scoring = r2)
+    sc_Fatalities.append(m_r2)
+
+
+    
+reg_models = [KNeighborsRegressor, LinearRegression, RandomForestRegressor, GradientBoostingRegressor, DecisionTreeRegressor,BayesianRidge,
+              BaggingRegressor]
+
+sc_Cases = []
+sc_Fatalities = []
+
+for x in reg_models:
+    predict_scores(x)",0
+"X = ohe.fit_transform(train[col4train])
+y = train[""ACTION""].values
+X_te = ohe.transform(test[col4train])
+
+model.fit(X,y)
+predictions = model.predict_proba(X_te)[:,1]
+
+submit = pd.DataFrame()
+submit[""Id""] = test[""id""]
+submit[""ACTION""] = predictions
+
+submit.to_csv(""submission.csv"", index = False)",0
+data['Adjective Review'] = adjectives,0
+"fill_missing = FillMissing(small_cat_vars, small_cont_vars)
+fill_missing(small_train_df)
+fill_missing(small_test_df, test=True)",0
+"#from lightgbm import LGBMRegressor 
+#lgb=LGBMRegressor()
+#lgb.fit(train,y)
+
+from sklearn.ensemble import RandomForestRegressor
+rf=RandomForestRegressor(n_estimators=100, n_jobs=-1)
+rf.fit(train,y)",0
+"train[""num_features""] = train[""features""].apply(len)
+test[""num_features""] = test[""features""].apply(len)",0
+"rf.fit(X, y)
+
+
+",1
+"
+svc_ml=svm.SVC()
+svc_ml.fit(train_merge4,target)
+svc_ml.predict(test_merge4)
+accuracy_score(pd.DataFrame(svc_ml.predict(train_merge4)),target)",0
+"country_info=train.groupby(['Date','Country_Region'])['ConfirmedCases'].sum()",0
+"b""#Aumentar a floresta - 200 rvores\n# instanciar o modelo\nrf2 = RandomForestRegressor(random_state=42,n_jobs=-1, n_estimators=200, min_samples_leaf=5)\n#n_jobs nr de job que rodam e paralalo para dar o fit. -1  #para usar todos os processadores\n#n_estimator  - nro de arvores. o defalt  10 mas mudar para 100 na proxima verso 0.22\n\n#treinar o modelo com os dados de treino\n\nrf2.fit(train[feats], train['count'])\n\n#Previses com os dados de validao\npreds2 = rf2.predict(valid[feats])\n\n# Aplicar mtrica sobre os dados de validao\n\nmean_squared_error(valid['count'], preds2)**(1/2)""",0
+"data_train[""Soil_Type""] = data_train[features_soil].apply(np.argmax, axis=1)
+data_train.head()",0
+"print('Importing training and test data')
+train_df = pd.read_csv('/kaggle/input/covid19-global-forecasting-week-2/train.csv')
+test_df = pd.read_csv('/kaggle/input/covid19-global-forecasting-week-2/test.csv')
+
+# Update dataframe
+train_df['Province_State'] = train_df['Province_State'].fillna('')
+train_df['Region'] = train_df['Country_Region'] + train_df['Province_State']
+
+test_df['Province_State'] = test_df['Province_State'].fillna('')
+test_df['Region'] = test_df['Country_Region'] + test_df['Province_State']
+
+regions = train_df.Region.unique()
+
+# Match days in train and test
+train_min_date = train_df[train_df['Region']=='Sweden']['Date'].min()
+test_min_date = test_df[test_df['Region']=='Sweden']['Date'].min()
+dt_train_min = datetime.strptime(train_min_date, '%Y-%m-%d') 
+dt_test_min = datetime.strptime(test_min_date, '%Y-%m-%d') 
+
+test_start_day = dt_test_min.timetuple().tm_yday - dt_train_min.timetuple().tm_yday
+print(test_start_day)
+
+# Extract dataframes for each country
+train_data = {}
+test_data = {}
+for region in regions:
+    train_data[region] = train_df[train_df['Region']==region]    
+    train_data[region]['DayNo'] = np.arange(len(train_df[train_df['Region']==region]['Date']))
+    test_data[region] = test_df[test_df['Region']==region]    
+    test_data[region]['DayNo'] = np.arange(test_start_day,test_start_day+len(test_df[test_df['Region']==region]['Date']))
+",0
+"rf = RandomForestRegressor(random_state=42, n_jobs=-1, n_estimators=200, oob_score=True, min_samples_split=4, max_features=0.9, max_depth=17)
+rf.fit(X, y)",1
+"# inverse scale results
+pred_df['ConfirmedCases'] = (
+    case_scaler.inverse_transform(pred_df['ConfirmedCases_scaled'].values.reshape(1,-1))[0])
+
+pred_df['Fatalities'] = (
+    fat_scaler.inverse_transform(pred_df['Fatalities_scaled'].values.reshape(1,-1))[0])",0
+"# Get list of categorical variables
+
+new= data[data.columns[~data.columns.isin(['Open Date','days','year','month'])]]
+
+numerical_features = new.select_dtypes([np.number]).columns.tolist()
+categorical_features = new.select_dtypes(exclude = [np.number,np.datetime64]).columns.tolist()
+categorical_features
+",0
+"rf.fit(train[feats], train['count'])",0
+"# Parameter tuning - This step requires a lot of calculation
+para = {'n_estimators': np.arange(200, 241, 1)}
+rf = GridSearchCV(estimator=rfr, param_grid=para, cv=5)
+rf.fit(x, y)",1
+"scaler = StandardScaler(with_std=False)
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)",0
+"hr_users_type_mean = pd.DataFrame(hr_users_type.groupby([""hr"",""variable""],sort=True)[""value""].mean()).reset_index()
+hr_users_type_mean.head()",0
+"##train_users['year_account_creation'] = pd.DatetimeIndex(train_users['date_account_created']).year
+train_users['timestamp_first_active'] = train_users['timestamp_first_active'].astype(str)
+
+train_users['date_account_created'] = pd.to_datetime(train_users['date_account_created'])
+
+#### converting the first active day to a date-time var
+train_users['timestamp_first_active_day'] = train_users['timestamp_first_active'].str[:8]
+train_users['timestamp_first_active_day'] = pd.to_datetime(train_users['timestamp_first_active_day'], format='%Y%m%d')
+
+#### find the first active year
+train_users['timestamp_first_active_year'] = train_users['timestamp_first_active'].str[:4]
+train_users['timestamp_first_active_hour'] = train_users['timestamp_first_active'].str[8:10]
+
+#### create a var to see if they searched before joining
+#train_users['searched_before_joining'] = (train_users['timestamp_first_active_day'] < train_users['date_account_created'])
+#train_users['searched_before_joining'] = train_users['searched_before_joining'] * 1
+
+#### did they do a previous trip? This appears to be a weird variable..
+##train_users['first_trip'] = pd.isnull(train_users['date_first_booking']) * 1
+
+major_languages = ['en']  
+train_users['language_bucket'] = np.where(train_users['language'].isin(major_languages), 'en', 'other')
+
+##### group up the age variable
+labels = [1, 2, 3, 4, 5, 6, 7]
+bins = [0, 20, 30, 40, 50, 60, 9000, 100000]
+train_users['age'].fillna(10000)
+train_users['age_group'] = pd.cut(train_users['age'], bins, right=False, labels=labels)
+train_users['age_group'] = train_users['age_group'] * 1
+
+train_users[""signup_combo""] = train_users[""signup_method""].map(str) + train_users[""signup_flow""].map(str)
+
+##### let's group the affiliate_provider variable
+
+major_affiliate_providers = ['direct', 'google', 'bing', 'craigslist', 'facebook']
+train_users['affiliate_provider_grp'] = np.where(train_users['affiliate_provider'].isin(major_affiliate_providers), train_users['affiliate_provider'], 'other')
+train_users[""affiliate_combined""] = train_users[""affiliate_provider_grp""].map(str) + train_users[""affiliate_channel""].map(str)
+
+
+
+
+
+
+###### adjust test so it matches the adjustments made to the train dataset
+test_users['timestamp_first_active'] = test_users['timestamp_first_active'].astype(str)
+test_users['date_account_created'] = pd.to_datetime(test_users['date_account_created'])
+test_users['timestamp_first_active_day'] = test_users['timestamp_first_active'].str[:8]
+test_users['timestamp_first_active_day'] = pd.to_datetime(test_users['timestamp_first_active_day'], format='%Y%m%d')
+test_users['timestamp_first_active_year'] = test_users['timestamp_first_active'].str[:4]
+#test_users['searched_before_joining'] = (test_users['timestamp_first_active_day'] < test_users['date_account_created'])
+#test_users['searched_before_joining'] = test_users['searched_before_joining'] * 1
+##test_users['first_trip'] = pd.isnull(test_users['date_first_booking']) * 1
+test_users['language_bucket'] = np.where(test_users['language'].isin(major_languages), 'en', 'other')
+test_users['age'].fillna(10000)
+test_users['age_group'] = pd.cut(test_users['age'], bins, right=False, labels=labels)
+test_users['age_group'] = test_users['age_group'] * 1
+test_users['timestamp_first_active_day'] = pd.to_datetime(test_users['timestamp_first_active_day'], format='%Y%m%d')
+test_users[""signup_combo""] = test_users[""signup_method""].map(str) + test_users[""signup_flow""].map(str)
+test_users['timestamp_first_active_hour'] = test_users['timestamp_first_active'].str[8:10]
+test_users['affiliate_provider_grp'] = np.where(test_users['affiliate_provider'].isin(major_affiliate_providers), test_users['affiliate_provider'], 'other')
+test_users[""affiliate_combined""] = test_users[""affiliate_provider_grp""].map(str) + test_users[""affiliate_channel""].map(str)
+
+'",0
+"knn.fit(xTrain,yTrain)
+pred_knn = knn.predict(testData).tolist()",0
+"train_loss_set = []
+
+# Number of training epochs (authors recommend between 2 and 4)
+epochs = 4
+
+# trange is a tqdm wrapper around the normal python range
+for _ in trange(epochs, desc=""Epoch""):
+  
+  
+  # Training
+  
+  # Set our model to training mode (as opposed to evaluation mode)
+  model.train()
+  
+  # Tracking variables
+  tr_loss = 0
+  nb_tr_examples, nb_tr_steps = 0, 0
+  
+  # Train the data for one epoch
+  for step, batch in enumerate(train_dataloader):
+    # Add batch to GPU
+    batch = tuple(t.to(device) for t in batch)
+    # Unpack the inputs from our dataloader
+    b_input_ids, b_input_mask, b_labels = batch
+    # Clear out the gradients (by default they accumulate)
+    optimizer.zero_grad()
+    # Forward pass
+    loss = model(b_input_ids, token_type_ids=None, attention_mask=b_input_mask, labels=b_labels)
+    train_loss_set.append(loss.item())    
+    # Backward pass
+    loss.backward()
+    # Update parameters and take a step using the computed gradient
+    optimizer.step()
+    
+    
+    # Update tracking variables
+    tr_loss += loss.item()
+    nb_tr_examples += b_input_ids.size(0)
+    nb_tr_steps += 1
+
+  print(""Train loss: {}"".format(tr_loss/nb_tr_steps))
+    
+    
+  # Validation
+
+  # Put model in evaluation mode to evaluate loss on the validation set
+  model.eval()
+
+  # Tracking variables 
+  eval_loss, eval_accuracy = 0, 0
+  nb_eval_steps, nb_eval_examples = 0, 0
+
+  # Evaluate data for one epoch
+  for batch in validation_dataloader:
+    # Add batch to GPU
+    batch = tuple(t.to(device) for t in batch)
+    # Unpack the inputs from our dataloader
+    b_input_ids, b_input_mask, b_labels = batch
+    # Telling the model not to compute or store gradients, saving memory and speeding up validation
+    with torch.no_grad():
+      # Forward pass, calculate logit predictions
+      logits = model(b_input_ids, token_type_ids=None, attention_mask=b_input_mask)
+    
+    # Move logits and labels to CPU
+    logits = logits.detach().cpu().numpy()
+    label_ids = b_labels.to('cpu').numpy()
+
+    tmp_eval_accuracy = flat_accuracy(logits, label_ids)
+    
+    eval_accuracy += tmp_eval_accuracy
+    nb_eval_steps += 1
+
+  print(""Validation Accuracy: {}"".format(eval_accuracy/nb_eval_steps))'",0
+"def prepare(df):
+    # transform the date into something human-meaningful
+    df['Year'] = pd.DatetimeIndex(df.Date).year
+    df['Month'] = pd.DatetimeIndex(df.Date).month
+    df['Day'] = pd.DatetimeIndex(df.Date).day
+    # encode StateHolidays into numbers
+    # Since there are only 'a' state holidays in test set, I can probably map a, b, c into 1
+    df[df.StateHoliday != '0'] = 1
+    df.StateHoliday = pd.to_numeric(df.StateHoliday)
+    return df",0
+"from sklearn.ensemble import GradientBoostingRegressor
+max_features = list(range(1,data.shape[1]))
+train_results = []
+test_results = []
+for max_feature in max_features:
+   model = GradientBoostingRegressor(max_features=max_feature)
+   model.fit(x_train, y_train)
+   from sklearn.metrics import mean_squared_error, r2_score
+   model_score = model.score(x_train,y_train)
+# Have a look at R sq to give an idea of the fit ,
+# Explained variance score: 1 is perfect prediction
+   y_predicted_train=model.predict(x_train)
+   train_results.append(mean_squared_error(y_train, y_predicted_train))
+   print('R2 sq: ',model_score)",0
+"df['day'] = df['datetime'].dt.day
+df.head()",0
+"b""# \nfrom sklearn.model_selection import train_test_split\n\nX_train, X_test = train_test_split(train, test_size=0.2, random_state=2)\n\ndtrain = xgb.DMatrix(X_train[features], np.log1p(X_train.Sales))\ndvalid = xgb.DMatrix(X_test[features], np.log1p(X_test.Sales))\ndtest = xgb.DMatrix(test[features])\n\nwatchlist = [(dtrain, 'train'),(dvalid, 'eval')]\ngbm = xgb.train(params, dtrain, num_trees, evals=watchlist, early_stopping_rounds=50, feval=rmspe_xg, verbose_eval=False)""",0
+"train[""num_photos""] = train[""photos""].apply(len)
+train[""num_features""] = train[""features""].apply(len)
+train[""num_description_words""] = train[""description""].apply(lambda x: len(x.split("" "")))
+train[""created""] = pd.to_datetime(train[""created""])
+train[""created_year""] = train[""created""].dt.year
+train[""created_month""] = train[""created""].dt.month
+train[""created_day""] = train[""created""].dt.day
+",0
+"from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+
+rf_model = RandomForestRegressor(random_state=1)
+rf_model.fit(x_train, y)
+rf_val_predictions = rf_model.predict(x_test)
+RMSE = sqrt(mean_squared_error(label_list,rf_val_predictions))
+print(RMSE)
+
+",0
+"result = pd.concat([pharaseid, dataframe], axis=1)",0
+"procs = [FillMissing, Categorify, Normalize]
+dep_var = 'Sales'
+#cont_names,cat_names= cont_cat_split(sample_train,dep_var=""Sales"")
+cont_names=[
+ 'CompetitionDistance',
+ 'Week',
+ 'Day',
+ 'Dayofyear',
+ 'Elapsed',
+ 'ratio-sales-customer',
+ 'ratio-saturday-week',
+ 'ratio-sunday-week',
+ 'ratio-promo-nopromo',
+ 'Promo_thisweek',
+ 'Open_thisweek',
+ 'StateHolidayBool_thisweek',
+ 'SchoolHoliday_thisweek',
+ 'Promo_prevweek',
+ 'Open_prevweek',
+ 'StateHolidayBool_prevweek',
+ 'SchoolHoliday_prevweek',
+ 'Promo_nextweek',
+ 'Open_nextweek',
+ 'StateHolidayBool_nextweek',
+ 'SchoolHoliday_nextweek',
+ 'Promo2Days',
+ 'CompetitionDaysOpen',
+ 'trend',
+ 'trend_DE',
+ 'Max_Humidity',
+ 'Max_Wind_SpeedKm_h',
+ 'Mean_Humidity',
+ 'Mean_TemperatureC',
+ 'Max_TemperatureC_chnage',
+ 'Month_Sales_mean',
+ 'Year_Sales_mean',
+ 'Dayofweek_Sales_mean',
+ 'Dayofweek_promo_Sales_mean',
+ 'BeforeSchoolHoliday',
+ 'AfterSchoolHoliday',
+ 'BeforeClosed',
+ 'AfterClosed',
+ 'BeforePromo',
+ 'AfterPromo',
+ 'BeforeStateHolidayBool',
+ 'AfterStateHolidayBool',
+ 'Promo2ActiveMonthBool',
+ 'BeforePromo2ActiveMonthBool',
+ 'AfterPromo2ActiveMonthBool',
+ 'SchoolHoliday_fw',
+ 'StateHolidayBool_fw',
+ 'Promo_fw',
+ 'Closed_fw',
+ 'Promo2ActiveMonthBool_fw',
+    'CompetitionOpenSince', 'Promo2Since'
+]
+cat_names=[
+  'Store',  
+  'DayOfWeek',
+ 'Open',
+ 'Promo',
+ 'StateHoliday',
+ 'SchoolHoliday',
+ 'StoreType',
+ 'Assortment',
+ 'Promo2',
+ 'PromoInterval',
+ 'Year',
+ 'Month',
+ 'Dayofweek',
+ 'Is_month_end',
+ 'Is_month_start',
+ 'Is_quarter_end',
+ 'Is_quarter_start',
+ 'Is_year_end',
+ 'Is_year_start',
+ 'Promo2SinceYear',
+ 'Promo2Na',
+ 'Events',
+'Fog',
+ 'Hail',
+ 'Rain',
+ 'Snow',
+ 'Thunderstorm',
+ 'Quarter',
+ 'CompetitionOpenNA',
+ 'CompetitionDistanceNA',
+ 'CompetitionOpenSinceYear',
+  'State'
+]
+'",0
+"X=train_df.drop(columns='count',axis=1)
+y=train_df['count']",0
+"people_df = pd.read_csv('../input/people.csv')
+columns = ['char_'+str(i) for i in range(1,10)]
+people_df[columns] = people_df[columns].apply(lambda x: x.astype('category').cat.codes)
+people_df['group_1'] = people_df['group_1'].astype('category').cat.codes
+people_df['date'] = pd.to_datetime(people_df['date'])
+people_df['day'] = people_df['date'].apply(lambda x:x.day)
+people_df['year'] = people_df['date'].apply(lambda x:x.year)
+people_df['month'] = people_df['date'].apply(lambda x:x.month)
+people_df = people_df.drop(['date'],axis = 1)
+people_df = people_df.set_index(people_df['people_id'])
+people_df.head()",0
+df = pd.DataFrame(),0
+"SH_int = LabelEncoder().fit_transform(df_train.StateHoliday.values.astype(str)).reshape(-1,1)
+ohe_feat = OneHotEncoder(sparse=False).fit_transform(SH_int)
+tmp = pd.DataFrame(ohe_feat, columns=['SH='+ str(i) for i in df_train.StateHoliday.unique()], 
+                   index=df_train.index,
+                   dtype=int)
+df_train = df_train.drop('StateHoliday', axis=1)
+df_train = pd.concat([df_train, tmp], axis=1)",0
+"knn.fit(Atrain,Btrain)",0
+"X = df.loc[:, df.columns != 'count']
+y = np.log(df['count'])",0
+X_test['path'] = test_image_paths,0
+"#Creating train_xx and target_xx
+train_xx=train[[ 'Day_Acct_Created',
+       'Month_Acct_Created', 'Year_Acct_Created', 'Hour_Acct_Created',
+       'DayOfWeek_Acct_Created', 'WeekOfYear_Acct_Created', 'Day_First_Active',
+       'Month_First_Active', 'Year_First_Active', 'Hour_First_Active',
+       'DayOfWeek_First_Active', 'WeekOfYear_First_Active',
+       'Day_First_Booking', 'Month_First_Booking', 'Year_First_Booking',
+       'Hour_First_Booking', 'DayOfWeek_First_Booking',
+       'WeekOfYear_First_Booking', 'signup_method_cd', 'language_cd',
+       'affiliate_channel_cd', 'affiliate_provider_cd', 'signup_app_cd',
+       'first_device_type_cd', 'first_browser_cd','gender','age']]
+target_xx=train['country_destination_cd']
+predict_xx=test[[ 'Day_Acct_Created',
+       'Month_Acct_Created', 'Year_Acct_Created', 'Hour_Acct_Created',
+       'DayOfWeek_Acct_Created', 'WeekOfYear_Acct_Created', 'Day_First_Active',
+       'Month_First_Active', 'Year_First_Active', 'Hour_First_Active',
+       'DayOfWeek_First_Active', 'WeekOfYear_First_Active',
+       'Day_First_Booking', 'Month_First_Booking', 'Year_First_Booking',
+       'Hour_First_Booking', 'DayOfWeek_First_Booking',
+       'WeekOfYear_First_Booking', 'signup_method_cd', 'language_cd',
+       'affiliate_channel_cd', 'affiliate_provider_cd', 'signup_app_cd',
+       'first_device_type_cd', 'first_browser_cd','gender','age']]",0
+"Img = []
+for i in range(7049):
+    img = train[""Image""][i].split(' ')
+    img = ['0' if x=='' else x for x in img]
+    Img.append(img)'",0
+"y = df.revenue
+X = df.drop(columns=['revenue'], axis=1)",0
+"
+batch_size=80000
+nb_epoch=400
+
+print('Fit model...')
+filepath=""weights_rossmann.best.hdf5""
+checkpoint = ModelCheckpoint(filepath, monitor='val_rmspe', verbose=1, save_best_only=True, mode='min')
+callbacks_list = [checkpoint]
+
+log = model_m.fit(X_train, y_train,
+          validation_data=(X_test,y_test), batch_size=batch_size ,epochs=nb_epoch, shuffle=True, callbacks=callbacks_list)'",0
+"store['Promo2SinceWeek']=store['Promo2SinceWeek'].fillna(0)
+store['Promo2SinceYear']=store['Promo2SinceYear'].fillna(store['Promo2SinceYear'].mode().loc[0])
+store['PromoInterval']=store['PromoInterval'].fillna(store['PromoInterval'].mode().iloc[0])",1
+"from keras.preprocessing.text import Tokenizer
+
+#convert tokenized words to numeric form required for model building
+tokenizer = Tokenizer(num_words=5000)
+tokenizer.fit_on_texts(train['Phrase'])
+
+train['Phrase'] = tokenizer.texts_to_sequences(train['Phrase'])",0
+"print(""Making Bag of words"")
+vectorizer = CountVectorizer(analyzer = ""word"",   \\
+                             tokenizer = None,    \\
+                             preprocessor = None, \\
+                             stop_words = None,   \\
+                             max_features = 5000) 
+
+vectorizer.fit(X)
+train_data_features = vectorizer.transform(clean_train_phrase)
+# Numpy arrays are easy to work with, so convert the result to an 
+# array
+train_data_features = train_data_features.toarray()
+'",1
+"from IPython.display import clear_output
+fit_results = out_model.fit(trn_image, trn_label, 
+                            validation_data=(vld_image, vld_label),
+                            epochs=100)
+clear_output()",0
+"rfc=RandomForestClassifier(n_estimators=70)
+rfc.fit(X_train,y_train)
+",0
+"test = pd.merge(test, population2020, how='left', left_on = 'Country_Region', right_on = 'name')
+test = pd.merge(test, gdp2020, how='left', left_on = 'Country_Region', right_on = 'country')",0
+"#Mark test and train users and merge them for data preparation
+train_users['type']='Train'
+test_users['country_destination']='NULL'
+test_users['type']='Test'
+users = pd.concat([train_users, test_users], ignore_index=True)",0
+"Xtrain = hstack((Xtr_brand, Xtr_model, Xtr_app, Xtr_label), format='csr')
+Xtest =  hstack((Xte_brand, Xte_model, Xte_app, Xte_label), format='csr')
+print('All features: train shape {}, test shape {}'.format(Xtrain.shape, Xtest.shape))",0
+"predict = []
+reg = LinearRegression().fit(x1_train, y1_train)
+pre_reg = reg.predict(x1_test)
+
+reg_poly = LinearRegression().fit(poly_x1_train, y1_train)
+pre_reg_poly = reg_poly.predict(poly_x1_test)
+
+rf_reg = GridSearchCV(rf, parameters, cv=5, verbose=2,scoring = scorer,n_jobs = -1)
+rf_reg.fit(x1_train, y1_train)
+pre_rf_reg = rf_reg.predict(x1_test)
+
+xg_reg = GridSearchCV(xg,parameter,cv=5,verbose = 2 , scoring = scorer, n_jobs = -1)
+xg_reg.fit(x1_train, y1_train)
+pre_xg_reg = xg_reg.predict(x1_test)
+
+predict.append(pre_reg)
+predict.append(pre_reg_poly)
+predict.append(pre_rf_reg)
+predict.append(pre_xg_reg)",0
+"def get_freq_encoding(dataset):
+    new_dataset = pd.DataFrame()
+    for c in dataset.columns:
+        data = dataset.groupby([c]).size().reset_index()
+        new_dataset[c+""_freq""] = dataset[[c]].merge(data, on = c, how = ""left"")[0]
+    return new_dataset",0
+"train[""year""]=0
+for i in range(len(train[""Open Date""])):
+       a=train[""Open Date""][i].split(""/"")
+       train[""year""][i]=a[2]
+
+train[""month""]=0
+for i in range(len(train[""Open Date""])):
+       a=train[""Open Date""][i].split(""/"")
+       train[""month""][i]=a[0]
+    
+train[""day_No""]=0
+for i in range(len(train[""Open Date""])):
+       a=train[""Open Date""][i].split(""/"")
+       train[""day_No""][i]=a[1]
+",0
+"from sklearn.neighbors import KNeighborsRegressor
+reg2 = KNeighborsRegressor(n_neighbors=50) #50nn = 0.37494 at 70% of the test database, 1000nn = 0.38598
+reg2 = reg2.fit(x_train_data, y_train_data) 
+knnR_y = reg2.predict(test_data)
+saving(""50nn Regressor.csv"", knnR_y)",0
+"log.fit(X_train_, y_train)",0
+"feature_names=list(test)
+df_train=train[feature_names]
+df=pd.concat((df_train, test))",0
+"from sklearn.model_selection import cross_val_score, GridSearchCV
+clf = GridSearchCV(AveragePerceptron(), param_grid={'learning_rate':[1, 0.1, 0.01], 'margin':[ 0, 0.1], 'decay': [False, True], 'epochs':[50], 'avg_decay':[False, True]}, cv=10, scoring='accuracy', n_jobs=-1)
+clf.fit(testing_data, testing_labels)",1
+"def name_replace(s, r1, r2):
+    s = str(s).replace(r1,r2)
+    for r3 in r1.split(' '):
+        s = str(s).replace(r3,r2)
+    return s
+
+def get_features(df):
+    df['section_min'] = df[['Pronoun-offset', 'A-offset', 'B-offset']].min(axis=1)
+    df['Pronoun-offset2'] = df['Pronoun-offset'] + df['Pronoun'].map(len)
+    df['A-offset2'] = df['A-offset'] + df['A_Noun'].map(len)
+    df['B-offset2'] = df['B-offset'] + df['B_Noun'].map(len) 
+    df['A-dist_abs'] = (df['Pronoun-offset'] - df['A-offset']).abs()
+    df['B-dist_abs'] = (df['Pronoun-offset'] - df['B-offset']).abs()
+    df['A-dist'] = (df['Pronoun-offset'] - df['A-offset'])
+    df['B-dist'] = (df['Pronoun-offset'] - df['B-offset'])
+    df['section_max'] = df[['Pronoun-offset2', 'A-offset2', 'B-offset2']].max(axis=1)
+    df['A_max'] = (df['A-offset2'] == df['section_max']).astype(int)
+    df['A_min'] = (df['A-offset2'] == df['section_min']).astype(int)
+    df['B_max'] = (df['B-offset2'] == df['section_max']).astype(int)
+    df['B_min'] = (df['B-offset2'] == df['section_min']).astype(int)
+    df['wc'] = df.apply(lambda r: len(str(r['Text'][r['section_min']: r['section_max']]).split(' ')), axis=1)
+    #df['Text'] = df.apply(lambda r: r['Text'][: r['Pronoun-offset']] + 'pronountarget' + r['Text'][r['Pronoun-offset'] + len(str(r['Pronoun'])): ], axis=1)
+    df['Text'] = df.apply(lambda r: name_replace(r['Text'], r['A_Noun'], 'subjectone'), axis=1)
+    df['Text'] = df.apply(lambda r: name_replace(r['Text'], r['B_Noun'], 'subjecttwo'), axis=1)
+    return(df)
+
+data = get_features(data)",1
+"devicelabels = (deviceapps[['device_id','app']]
+                .merge(applabels[['app','label']])
+                .groupby(['device_id','label'])['app'].agg(['size'])
+                .merge(gatrain[['trainrow']], how='left', left_index=True, right_index=True)
+                .merge(gatest[['testrow']], how='left', left_index=True, right_index=True)
+                .reset_index())
+devicelabels.head()",0
+"# fitting the model on the entire data without split
+clf.fit(X, y)",1
+"class_names = ['airplane','automobile','bird','cat','deer','dog','frog','horse','ship','truck']
+for name in  class_names:
+    index = class_names.index(name)
+    train_images.loc[train_images.label==name,'label'] = str(index)
+        
+display_groupby = train_images.groupby(['label']).count()
+display_groupby.head(10)",0
+"# Filter selected features
+data = all_data.copy()
+features = ['Id', 'ForecastId', 'Country_Region', 'Province_State', 'ConfirmedCases', 'Fatalities', 
+       'Day_num']
+data = data[features]
+
+# Apply log transformation to all ConfirmedCases and Fatalities columns, except for trends
+data[['ConfirmedCases', 'Fatalities']] = data[['ConfirmedCases', 'Fatalities']].astype('float64')
+data[['ConfirmedCases', 'Fatalities']] = data[['ConfirmedCases', 'Fatalities']].apply(lambda x: np.log1p(x))
+
+# Replace infinites
+data.replace([np.inf, -np.inf], 0, inplace=True)
+
+
+# Split data into train/test
+def split_data(data):
+    
+    # Train set
+    x_train = data[data.ForecastId == -1].drop(['ConfirmedCases', 'Fatalities'], axis=1)
+    y_train_1 = data[data.ForecastId == -1]['ConfirmedCases']
+    y_train_2 = data[data.ForecastId == -1]['Fatalities']
+
+    # Test set
+    x_test = data[data.ForecastId != -1].drop(['ConfirmedCases', 'Fatalities'], axis=1)
+
+    # Clean Id columns and keep ForecastId as index
+    x_train.drop('Id', inplace=True, errors='ignore', axis=1)
+    x_train.drop('ForecastId', inplace=True, errors='ignore', axis=1)
+    x_test.drop('Id', inplace=True, errors='ignore', axis=1)
+    x_test.drop('ForecastId', inplace=True, errors='ignore', axis=1)
+    
+    return x_train, y_train_1, y_train_2, x_test
+
+
+# Ridge replace of the Linear regression model
+def ridge_reg(X_train, Y_train, X_test):
+    # Create Ridge regression object
+    #regr = Ridge()        # commit 2
+    #regr = RidgeCV(cv=5)  # commit 4
+    #regr = Ridge(alpha=10) # commit 5
+    regr = Ridge(alpha=10) # now
+
+    # Train the model using the training sets
+    regr.fit(X_train, Y_train)
+
+    # Make predictions using the testing set
+    y_pred = regr.predict(X_test)
+    
+    return regr, y_pred
+
+
+# Submission function
+def get_submission(s, df, target1, target2):
+    
+    prediction_1 = df[target1]
+    prediction_2 = df[target2]
+
+    # Submit predictions
+    prediction_1 = [int(item) for item in list(map(round, prediction_1))]
+    prediction_2 = [int(item) for item in list(map(round, prediction_2))]
+    
+    submission = pd.DataFrame({
+        ""ForecastId"": df['ForecastId'].astype('int32'), 
+        ""ConfirmedCases"": prediction_1, 
+        ""Fatalities"": prediction_2
+    })
+    submission.to_csv(s + '.csv', index=False)'",0
+"model = models[2]
+model.fit(features, labels)
+model.coef_",1
+"train['num_photos'] = train['photos'].apply(len)
+train['num_features'] = train['features'].apply(len)
+train['num_description_words'] = train['description'].apply(lambda x: len(x.split(' ')))
+train['rooms'] = train['bathrooms'] + train['bedrooms']
+
+ulimit = np.percentile(train.price.values, 99)
+train['price'].loc[train['price']>ulimit] = ulimit
+train['rooms_per_price'] = train['rooms']/train['price']
+train = train[train['bedrooms'] > 0]
+train['bath_per_beds'] = train['bathrooms']/train['bedrooms']
+train.loc[train['bath_per_beds'] > 999999999999,'bath_per_beds'] = 0",0
+"df_stores_new = df_total_sales_customers.join(df_store.set_index('Store'), on='Store')
+df_stores_new.head()",0
+"X_train, y_train = df_train.drop('Sales', axis=1).values, df_train['Sales'].values",0
+"best_knr.fit(train,trainer['median_house_value'])",0
+df_train['Open Date'] = df_train['Open Date'].str.split('/').apply(lambda x : x[2]),0
